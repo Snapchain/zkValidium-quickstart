@@ -312,6 +312,8 @@ services:
     ports:
       - 8545:8545
       - 8546:8546
+    volumes:
+      - deploy-output:/deploymentOutput
     command:
       - "--http"
       - "--http.api"
@@ -368,7 +370,7 @@ services:
       cdk-validium-data-availability:
         condition: service_started
     volumes:
-      - ./deploy_output.json:/cdk-validium-contracts/docker/scripts/deploy_output.json          
+      - deploy-output:/shared
     environment:
       - JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
       - DAC_URL=http://cdk-validium-data-availability:8444
@@ -547,3 +549,6 @@ services:
       - ./config/test.genesis.config.json:/app/genesis.json
     command:
       - "/bin/sh"
+
+volumes:
+  deploy-output:
