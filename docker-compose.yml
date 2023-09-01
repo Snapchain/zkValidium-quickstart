@@ -48,7 +48,7 @@ services:
 
   cdk-validium-sequencer:
     container_name: cdk-validium-sequencer
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 9092:9091 # needed if metrics enabled
       - 6060:6060
@@ -65,7 +65,7 @@ services:
 
   cdk-validium-sequence-sender:
     container_name: cdk-validium-sequence-sender
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
       - CDK_VALIDIUM_NODE_POOL_DB_HOST=cdk-validium-pool-db
@@ -81,7 +81,7 @@ services:
 
   cdk-validium-json-rpc:
     container_name: cdk-validium-json-rpc
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 8123:8123
       - 8133:8133 # needed if WebSockets enabled
@@ -99,7 +99,7 @@ services:
 
   cdk-validium-aggregator:
     container_name: cdk-validium-aggregator
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 50081:50081
       - 9093:9091 # needed if metrics enabled
@@ -116,7 +116,7 @@ services:
 
   cdk-validium-sync:
     container_name: cdk-validium-sync
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
@@ -129,7 +129,7 @@ services:
 
   cdk-validium-eth-tx-manager:
     container_name: cdk-validium-eth-tx-manager
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 9094:9091 # needed if metrics enabled
     environment:
@@ -146,7 +146,7 @@ services:
 
   cdk-validium-l2gaspricer:
     container_name: cdk-validium-l2gaspricer
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     environment:
       - CDK_VALIDIUM_NODE_POOL_DB_HOST=cdk-validium-pool-db
     volumes:
@@ -278,7 +278,7 @@ services:
 
   cdk-validium-explorer-json-rpc:
     container_name: cdk-validium-explorer-json-rpc
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 8124:8124
       - 8134:8134 # needed if WebSockets enabled
@@ -389,20 +389,65 @@ services:
     command: >
       zkProver -c /usr/src/app/config.json
 
-  zkprover-mock:
-    container_name: zkprover-mock
-    image: hermeznetwork/zkprover-mock:latest
+  zkevm-bridge-db:
+    container_name: zkevm-bridge-db
+    image: postgres
     ports:
-      - 43061:43061 # MT
-      - 43071:43071 # Executor
+      - 5438:5432
+    environment:
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=test_db
+    command: ["postgres", "-N", "500"]
+
+  zkevm-bridge-service:
+    container_name: zkevm-bridge-service
+    image: hermeznetwork/zkevm-bridge-service:latest
+    ports:
+      - 8080:8080
+      - 9090:9090
+    depends_on:
+      - zkevm-bridge-db
+    environment:
+      - ZKEVM_BRIDGE_DATABASE_USER=test_user
+      - ZKEVM_BRIDGE_DATABASE_PASSWORD=test_password
+      - ZKEVM_BRIDGE_DATABASE_NAME=test_db
+      - ZKEVM_BRIDGE_DATABASE_HOST=zkevm-bridge-db
+      - ZKEVM_BRIDGE_DATABASE_PORT=5432
     volumes:
-      - ./vectors/src:/app/testvectors
-    command: >
-      /app/zkprover-mock server --statedb-port 43061 --executor-port 43071 --test-vector-path /app/testvectors
+      - ./config/test.keystore.claimtx:/pk/keystore.claimtxmanager
+      - ./config/bridge.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/zkevm-bridge run --cfg /app/config.toml"
+
+  zkevm-bridge-ui:
+    container_name: zkevm-bridge-ui
+    image: hermeznetwork/zkevm-bridge-ui:latest
+    ports:
+      - 8088:80
+    depends_on:
+      - zkevm-bridge-service
+    environment:
+      - ETHEREUM_RPC_URL=http://54.236.20.232:8545
+      - ETHEREUM_EXPLORER_URL=http://54.236.20.232:4000
+      - ETHEREUM_BRIDGE_CONTRACT_ADDRESS=0x4C739372258826995C302CD655beE12689B97d3F
+      - ETHEREUM_FORCE_UPDATE_GLOBAL_EXIT_ROOT=true
+      - ETHEREUM_PROOF_OF_EFFICIENCY_CONTRACT_ADDRESS=0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
+      - POLYGON_ZK_EVM_RPC_URL=http://54.236.20.232:8123
+      - POLYGON_ZK_EVM_EXPLORER_URL=http://54.236.20.232:4000
+      - POLYGON_ZK_EVM_BRIDGE_CONTRACT_ADDRESS=0xff0EE8ea08cEf5cb4322777F5CC3E8A584B8A4A0
+      - POLYGON_ZK_EVM_NETWORK_ID=1001
+      - BRIDGE_API_URL=http://54.236.20.232:8080
+      - ENABLE_FIAT_EXCHANGE_RATES=false
+      - ENABLE_OUTDATED_NETWORK_MODAL=false
+      - ENABLE_DEPOSIT_WARNING=true
+      - ENABLE_REPORT_FORM=false
 
   cdk-validium-approve:
     container_name: cdk-validium-approve
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
@@ -438,7 +483,7 @@ services:
 
   cdk-validium-permissionless-node-forced-DAC:
     container_name: cdk-validium-permissionless-node-forced-DAC
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 8125:8125
     environment:
@@ -466,7 +511,7 @@ services:
 
   cdk-validium-permissionless-node:
     container_name: cdk-validium-permissionless-node
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     ports:
       - 8125:8125
     environment:
@@ -538,7 +583,7 @@ services:
 
   cdk-validium-sh:
     container_name: zkevm-sh
-    image: snapchain/cdk-validium-node
+    image: hermeznetwork/cdk-validium-node:develop
     stdin_open: true 
     tty: true
     environment:
