@@ -402,7 +402,7 @@ services:
 
   zkevm-bridge-service:
     container_name: zkevm-bridge-service
-    image: hermeznetwork/zkevm-bridge-service:latest
+    image: hermeznetwork/zkevm-bridge-service:v0.2.0
     ports:
       - 8080:8080
       - 9090:9090
@@ -430,16 +430,16 @@ services:
     depends_on:
       - zkevm-bridge-service
     environment:
-      - ETHEREUM_RPC_URL=http://54.236.20.232:8545
-      - ETHEREUM_EXPLORER_URL=http://54.236.20.232:4000
+      - ETHEREUM_RPC_URL=http://localhost:8545
+      - ETHEREUM_EXPLORER_URL=http://localhost:4000
       - ETHEREUM_BRIDGE_CONTRACT_ADDRESS=0x4C739372258826995C302CD655beE12689B97d3F
       - ETHEREUM_FORCE_UPDATE_GLOBAL_EXIT_ROOT=true
       - ETHEREUM_PROOF_OF_EFFICIENCY_CONTRACT_ADDRESS=0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
-      - POLYGON_ZK_EVM_RPC_URL=http://54.236.20.232:8123
-      - POLYGON_ZK_EVM_EXPLORER_URL=http://54.236.20.232:4000
+      - POLYGON_ZK_EVM_RPC_URL=http://localhost:8123
+      - POLYGON_ZK_EVM_EXPLORER_URL=http://localhost:4000
       - POLYGON_ZK_EVM_BRIDGE_CONTRACT_ADDRESS=0xff0EE8ea08cEf5cb4322777F5CC3E8A584B8A4A0
-      - POLYGON_ZK_EVM_NETWORK_ID=1001
-      - BRIDGE_API_URL=http://54.236.20.232:8080
+      - POLYGON_ZK_EVM_NETWORK_ID=1
+      - BRIDGE_API_URL=http://localhost:8080
       - ENABLE_FIAT_EXCHANGE_RATES=false
       - ENABLE_OUTDATED_NETWORK_MODAL=false
       - ENABLE_DEPOSIT_WARNING=true
