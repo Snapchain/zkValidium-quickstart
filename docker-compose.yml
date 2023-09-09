@@ -338,6 +338,16 @@ services:
       - "full"
       - "--rpc.allow-unprotected-txs"
 
+  cdk-validium-deploy-sepolia:
+    container_name: cdk-validium-deploy-sepolia
+    image: snapchain/sepolia-cdk-validium-contracts
+    volumes:
+      - deploy-output:/deploymentOutput
+    environment:
+      - MNEMONIC=<deployer-mnemonic>
+      - INFURA_PROJECT_ID=<deployer-infura-project-id>
+      - HARDHAT_NETWORK=sepolia
+
   cdk-validium-data-availability:
     container_name: cdk-validium-data-availability
     restart: unless-stopped
@@ -365,16 +375,17 @@ services:
     container_name: dac-setup-committee
     image: snapchain/dac-setup-committee
     depends_on:
-      cdk-validium-mock-l1-network:
-        condition: service_started
+      cdk-validium-deploy-sepolia:
+        condition: service_completed_successfully
       cdk-validium-data-availability:
         condition: service_started
     volumes:
       - deploy-output:/shared
     environment:
-      - JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
+      - JSONRPC_HTTP_URL=https://sepolia.infura.io/v3/<deployer-infura-project-id>
       - DAC_URL=http://cdk-validium-data-availability:8444
       - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+      - DEPLOYER_PRIVATE_KEY=<deployer-private-key>
 
   cdk-validium-prover:
     container_name: cdk-validium-prover

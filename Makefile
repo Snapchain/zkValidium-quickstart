@@ -10,6 +10,7 @@ DOCKERCOMPOSESTATEDB := cdk-validium-state-db
 DOCKERCOMPOSEPOOLDB := cdk-validium-pool-db
 DOCKERCOMPOSEEVENTDB := cdk-validium-event-db
 DOCKERCOMPOSENETWORK := cdk-validium-mock-l1-network
+DOCKERCOMPOSESEPOLIA := cdk-validium-deploy-sepolia
 DOCKERCOMPOSEDAC := cdk-validium-data-availability
 DOCKERCOMPOSESETUPDAC := dac-setup-committee
 DOCKERCOMPOSEEXPLORERL1 := cdk-validium-explorer-l1
@@ -38,6 +39,7 @@ RUNSYNC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPSYNC)
 RUNETHTXMANAGER := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEAPPETHTXMANAGER)
 RUNGRAFANA := DOCKERGID=`stat -c '%g' /var/run/docker.sock` $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEGRAFANA)
 
+DEPLOYTOSEPOLIANETWORK := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSESEPOLIA)
 RUNL1NETWORK := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSENETWORK)
 RUNDAC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEDAC)
 RUNSETUPDAC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSESETUPDAC)
@@ -473,7 +475,8 @@ run: ## Runs a full node
 	$(RUNPOOLDB)
 	$(RUNEVENTDB)
 	$(RUNDACDB)
-	$(RUNL1NETWORK)
+	$(DEPLOYTOSEPOLIANETWORK)
+	sleep 1
 	$(RUNDAC)
 	sleep 1
 	$(RUNSETUPDAC)
@@ -489,7 +492,7 @@ run: ## Runs a full node
 	$(RUNL2GASPRICER)
 	$(RUNAGGREGATOR)
 	$(RUNJSONRPC)
-	$(MAKE) run-explorer
+	$(MAKE) run-l2-explorer
 
 .PHONY: stop
 stop: ## Stops all services
