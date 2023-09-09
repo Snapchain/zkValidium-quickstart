@@ -342,11 +342,16 @@ services:
     container_name: cdk-validium-deploy-sepolia
     image: snapchain/sepolia-cdk-validium-contracts
     volumes:
-      - deploy-output:/deploymentOutput
+      - ./config/deploy_parameters.json:/cdk-validium-contracts/deployment/deploy_parameters.json
+      - deploy-output:/cdk-validium-contracts/deploymentOutput
     environment:
       - MNEMONIC=<deployer-mnemonic>
       - INFURA_PROJECT_ID=<deployer-infura-project-id>
       - HARDHAT_NETWORK=sepolia
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "npm run deploy:deployer:CDKValidium:sepolia && npm run deploy:testnet:CDKValidium:sepolia"
 
   cdk-validium-data-availability:
     container_name: cdk-validium-data-availability
@@ -371,9 +376,28 @@ services:
       - "-c"
       - "/app/cdk-data-availability run --cfg /app/config.toml"
 
-  dac-setup-committee:
+  dac-setup-committee-mock-l1:
     container_name: dac-setup-committee
-    image: snapchain/dac-setup-committee
+    image: snapchain/sepolia-cdk-validium-contracts
+    depends_on:
+      cdk-validium-mock-l1-network:
+        condition: service_started
+      cdk-validium-data-availability:
+        condition: service_started
+    volumes:
+      - deploy-output:/shared
+    environment:
+      - JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
+      - DAC_URL=http://cdk-validium-data-availability:8444
+      - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "npm run setup:committee"
+
+  dac-setup-committee-sepolia:
+    container_name: dac-setup-committee
+    image: snapchain/sepolia-cdk-validium-contracts
     depends_on:
       cdk-validium-deploy-sepolia:
         condition: service_completed_successfully
@@ -386,6 +410,10 @@ services:
       - DAC_URL=http://cdk-validium-data-availability:8444
       - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
       - DEPLOYER_PRIVATE_KEY=<deployer-private-key>
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "npm run setup:committee"
 
   cdk-validium-prover:
     container_name: cdk-validium-prover
