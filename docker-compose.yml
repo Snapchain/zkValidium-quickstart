@@ -340,7 +340,7 @@ services:
 
   cdk-validium-deploy-sepolia:
     container_name: cdk-validium-deploy-sepolia
-    image: snapchain/sepolia-cdk-validium-contracts
+    image: snapchain/cdk-validium-contracts
     volumes:
       - ./config/deploy_parameters.json:/cdk-validium-contracts/deployment/deploy_parameters.json
       - deploy-output:/cdk-validium-contracts/deploymentOutput
@@ -378,7 +378,7 @@ services:
 
   dac-setup-committee-mock-l1:
     container_name: dac-setup-committee
-    image: snapchain/sepolia-cdk-validium-contracts
+    image: snapchain/cdk-validium-contracts
     depends_on:
       cdk-validium-mock-l1-network:
         condition: service_started
@@ -397,7 +397,7 @@ services:
 
   dac-setup-committee-sepolia:
     container_name: dac-setup-committee
-    image: snapchain/sepolia-cdk-validium-contracts
+    image: snapchain/cdk-validium-contracts
     depends_on:
       cdk-validium-deploy-sepolia:
         condition: service_completed_successfully
