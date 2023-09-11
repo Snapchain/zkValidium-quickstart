@@ -224,7 +224,7 @@ services:
 
   cdk-validium-explorer-l1:
     container_name: cdk-validium-explorer-l1
-    image: scmorgan/sc-hermez-zkevm-explorer:latest
+    image: hermeznetwork/zkevm-explorer:latest
     ports:
       - 4000:4000
     environment:
@@ -257,7 +257,7 @@ services:
 
   cdk-validium-explorer-l2:
     container_name: cdk-validium-explorer-l2
-    image: scmorgan/sc-hermez-zkevm-explorer:latest
+    image: hermeznetwork/zkevm-explorer:latest
     ports:
       - 4001:4000
     environment:
