@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  explorer-proxy:
+    image: nginx
+    container_name: explorer-proxy
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - "../proxy:/etc/nginx/templates"
+    environment:
+      PROXIED_FRONT_URL: ${PROXIED_FRONT_URL:-http://${COMMON_HOST}}
+      BACK_PROXY_PASS: ${BACK_PROXY_PASS:-http://cdk-validium-explorer-l1:4000}
+      FRONT_PROXY_PASS: ${FRONT_PROXY_PASS:-http://explorer-frontend-l1:3000}
+      STATS_PROXY_PASS: ${STATS_PROXY_PASS:-http://explorer-stats-l1:8050/}

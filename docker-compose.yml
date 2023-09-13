@@ -224,7 +224,7 @@ services:
 
   cdk-validium-explorer-l1:
     container_name: cdk-validium-explorer-l1
-    image: hermeznetwork/zkevm-explorer:latest
+    image: blockscout/blockscout:latest
     ports:
       - 4000:4000
     environment:
@@ -233,13 +233,17 @@ services:
       - COIN=ETH
       - ETHEREUM_JSONRPC_VARIANT=geth
       - ETHEREUM_JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
+      - ETHEREUM_JSONRPC_TRACE_URL=http://cdk-validium-mock-l1-network:8545
       - DATABASE_URL=postgres://l1_explorer_user:l1_explorer_password@cdk-validium-explorer-l1-db:5432/l1_explorer_db
+      - SECRET_KEY_BASE=5LSuVfZikCc3HVIyabkfoiqnUfwyhJaam8btXA3g5kHCi5CCu3iS9VZ28bC7LMiE
       - ECTO_USE_SSL=false
       - MIX_ENV=prod
-    command:
-      - "/bin/sh"
-      - "-c"
-      - "mix do ecto.create, ecto.migrate; mix phx.server"
+      - PORT=4000
+      - DISABLE_EXCHANGE_RATES=true
+      - INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER=true
+      - ETHEREUM_JSONRPC_DISABLE_ARCHIVE_BALANCES=true
+      - API_V2_ENABLED=true
+    command: sh -c "bin/blockscout eval \"Elixir.Explorer.ReleaseTasks.create_and_migrate()\" && bin/blockscout start"
 
   cdk-validium-explorer-l1-db:
     container_name: cdk-validium-explorer-l1-db
@@ -250,14 +254,85 @@ services:
       - POSTGRES_USER=l1_explorer_user
       - POSTGRES_PASSWORD=l1_explorer_password
       - POSTGRES_DB=l1_explorer_db
+    volumes:
+      - explorer_l1_db_data:/var/lib/postgresql/data
     command:
       - "postgres"
       - "-N"
       - "500"
 
+  explorer-smart-contract-verifier:
+    extends:
+      file: ./services/docker-compose-smart-contract-verifier.yml
+      service: explorer-smart-contract-verifier
+
+  explorer-visualizer:
+    extends:
+      file: ./services/docker-compose-visualizer.yml
+      service: explorer-visualizer
+
+  explorer-sig-provider:
+    extends:
+      file: ./services/docker-compose-sig-provider.yml
+      service: explorer-sig-provider
+
+  explorer-frontend-l1:
+    depends_on:
+      - cdk-validium-explorer-l1
+    extends:
+      file: ./services/docker-compose-frontend.yml
+      service: explorer-frontend
+    container_name: 'explorer-frontend-l1'
+    environment:
+      - NEXT_PUBLIC_API_PORT=81
+      - NEXT_PUBLIC_NETWORK_NAME=Local Ethereum
+      - NEXT_PUBLIC_NETWORK_SHORT_NAME=Local Ethereum
+      - NEXT_PUBLIC_NETWORK_ID=1337
+      - NEXT_PUBLIC_NETWORK_RPC_URL=http://${COMMON_HOST}:8545
+      - NEXT_PUBLIC_STATS_API_HOST=http://${COMMON_HOST}:8082
+    ports:
+      - 3000:3000
+
+  explorer-stats-db-l1:
+    depends_on:
+      - cdk-validium-explorer-l1
+    extends:
+      file: ./services/docker-compose-stats.yml
+      service: explorer-stats-db
+    container_name: 'explorer-stats-db-l1'
+    ports:
+      - 7433:5432
+
+  explorer-stats-l1:
+    depends_on:
+      - explorer-stats-db-l1
+    extends:
+      file: ./services/docker-compose-stats.yml
+      service: explorer-stats
+    container_name: 'explorer-stats-l1'
+    ports:
+      - 8153:8050
+    environment:
+      - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
+      - STATS__BLOCKSCOUT_DB_URL=postgresql://l1_explorer_user:l1_explorer_password@cdk-validium-explorer-l1-db:5432/l1_explorer_db
+
+  explorer-proxy-l1:
+    depends_on:
+      - cdk-validium-explorer-l1
+      - explorer-frontend-l1
+      - explorer-stats-l1
+    extends:
+      file: ./services/docker-compose-nginx.yml
+      service: explorer-proxy
+    container_name: 'explorer-proxy-l1'
+    ports:
+      - 81:80
+      - 8082:8080
+      - 8083:8081
+
   cdk-validium-explorer-l2:
     container_name: cdk-validium-explorer-l2
-    image: hermeznetwork/zkevm-explorer:latest
+    image: blockscout/blockscout-zkevm:latest
     ports:
       - 4001:4000
     environment:
@@ -267,14 +342,17 @@ services:
       - ETHEREUM_JSONRPC_VARIANT=geth
       - ETHEREUM_JSONRPC_HTTP_URL=http://cdk-validium-explorer-json-rpc:8124
       - DATABASE_URL=postgres://l2_explorer_user:l2_explorer_password@cdk-validium-explorer-l2-db:5432/l2_explorer_db
+      - SECRET_KEY_BASE=PGfceH3KD+rg3Po7hjvvG7vRepRgqA3R/45ApXbLfAhqyrj616/abOijFQ8lte5z
       - ECTO_USE_SSL=false
       - MIX_ENV=prod
       - LOGO=/images/blockscout_logo.svg
       - LOGO_FOOTER=/images/blockscout_logo.svg
-    command:
-      - "/bin/sh"
-      - "-c"
-      - "mix do ecto.create, ecto.migrate; mix phx.server"
+      - PORT=4000
+      - DISABLE_EXCHANGE_RATES=true
+      - API_V2_ENABLED=true
+      - INDEXER_ZKEVM_BATCHES_ENABLED=true
+      - CHAIN_TYPE=polygon_zkevm
+    command: sh -c "bin/blockscout eval \"Elixir.Explorer.ReleaseTasks.create_and_migrate()\" && bin/blockscout start"
 
   cdk-validium-explorer-json-rpc:
     container_name: cdk-validium-explorer-json-rpc
@@ -304,7 +382,67 @@ services:
       - POSTGRES_USER=l2_explorer_user
       - POSTGRES_PASSWORD=l2_explorer_password
       - POSTGRES_DB=l2_explorer_db
+    volumes:
+      - explorer_l2_db_data:/var/lib/postgresql/data
     command: [ "postgres", "-N", "500" ]
+
+  explorer-frontend-l2:
+    depends_on:
+      - cdk-validium-explorer-l2
+    extends:
+      file: ./services/docker-compose-frontend.yml
+      service: explorer-frontend
+    container_name: 'explorer-frontend-l2'
+    environment:
+      - NEXT_PUBLIC_APP_PORT=3001
+      - NEXT_PUBLIC_NETWORK_NAME=zkEVM
+      - NEXT_PUBLIC_NETWORK_SHORT_NAME=zkEVM
+      - NEXT_PUBLIC_NETWORK_ID=1001
+      - NEXT_PUBLIC_NETWORK_RPC_URL=http://${COMMON_HOST}:8123
+      - NEXT_PUBLIC_NETWORK_LOGO=https://raw.githubusercontent.com/blockscout/frontend-configs/main/configs/network-logos/polygon.svg
+      - NEXT_PUBLIC_NETWORK_ICON=https://raw.githubusercontent.com/blockscout/frontend-configs/main/configs/network-icons/polygon-short.svg
+      - NEXT_PUBLIC_HOMEPAGE_PLATE_BACKGROUND=linear-gradient(122deg, rgba(162, 41, 197, 1) 0%, rgba(123, 63, 228, 1) 100%)
+      - NEXT_PUBLIC_HOMEPAGE_PLATE_TEXT_COLOR=rgba(255, 255, 255, 1)
+      - NEXT_PUBLIC_STATS_API_HOST=http://${COMMON_HOST}:8084
+    ports:
+      - 3001:3000
+
+  explorer-stats-db-l2:
+    depends_on:
+      - cdk-validium-explorer-l2
+    extends:
+      file: ./services/docker-compose-stats.yml
+      service: explorer-stats-db
+    container_name: 'explorer-stats-db-l2'
+    ports:
+      - 7434:5432
+
+  explorer-stats-l2:
+    depends_on:
+      - explorer-stats-db-l2
+    extends:
+      file: ./services/docker-compose-stats.yml
+      service: explorer-stats
+    container_name: 'explorer-stats-l2'
+    ports:
+      - 8154:8050
+    environment:
+      - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
+      - STATS__BLOCKSCOUT_DB_URL=postgresql://l2_explorer_user:l2_explorer_password@cdk-validium-explorer-l2-db:5432/l2_explorer_db
+
+  explorer-proxy-l2:
+    depends_on:
+      - cdk-validium-explorer-l2
+      - explorer-frontend-l2
+      - explorer-stats-l2
+    extends:
+      file: ./services/docker-compose-nginx.yml
+      service: explorer-proxy
+    container_name: 'explorer-proxy-l2'
+    ports:
+      - 80:80
+      - 8084:8080
+      - 8081:8081
 
   cdk-validium-mock-l1-network:
     container_name: cdk-validium-mock-l1-network
@@ -470,12 +608,12 @@ services:
       - zkevm-bridge-service
     environment:
       - ETHEREUM_RPC_URL=http://${COMMON_HOST}:8545
-      - ETHEREUM_EXPLORER_URL=http://${COMMON_HOST}:4000
+      - ETHEREUM_EXPLORER_URL=http://${COMMON_HOST}:81
       - ETHEREUM_BRIDGE_CONTRACT_ADDRESS=0x4C739372258826995C302CD655beE12689B97d3F
       - ETHEREUM_FORCE_UPDATE_GLOBAL_EXIT_ROOT=true
       - ETHEREUM_PROOF_OF_EFFICIENCY_CONTRACT_ADDRESS=0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
       - POLYGON_ZK_EVM_RPC_URL=http://${COMMON_HOST}:8123
-      - POLYGON_ZK_EVM_EXPLORER_URL=http://${COMMON_HOST}:4001
+      - POLYGON_ZK_EVM_EXPLORER_URL=http://${COMMON_HOST}:80
       - POLYGON_ZK_EVM_BRIDGE_CONTRACT_ADDRESS=0xff0EE8ea08cEf5cb4322777F5CC3E8A584B8A4A0
       - POLYGON_ZK_EVM_NETWORK_ID=1
       - BRIDGE_API_URL=http://${COMMON_HOST}:8080
@@ -636,3 +774,5 @@ services:
 
 volumes:
   deploy-output:
+  explorer_l1_db_data:
+  explorer_l2_db_data:
