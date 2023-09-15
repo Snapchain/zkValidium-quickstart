@@ -478,58 +478,45 @@ run-approve-matic: ## Runs approve in node container
 stop-approve-matic: ## Stops approve in node container
 	$(STOPAPPROVE)
 
-.PHONY: run
-run: ## Runs a full node
-	$(RUNSTATEDB)
-	$(RUNPOOLDB)
-	$(RUNEVENTDB)
-	$(RUNDACDB)
-	$(RUNBRIDGEDB)
-	$(RUNL1NETWORK)
+.PHONY: run-dac
+run-dac: ## Runs the DAC DB and service
+  $(RUNDACDB)
 	$(RUNDAC)
+
+.PHONY: run-bridge
+run-bridge: ## Runs the native bridge
+  $(RUNBRIDGEDB)
 	sleep 1
-	$(RUNSETUPDACMOCKL1)
-	sleep 2
-	$(RUNZKPROVER)
-	$(RUNAPPROVE)
-	sleep 3
-	$(RUNSYNC)
-	sleep 2
-	$(RUNETHTXMANAGER)
-	$(RUNSEQUENCER)
-	$(RUNSEQUENCESENDER)
-	$(RUNL2GASPRICER)
-	$(RUNAGGREGATOR)
-	$(RUNJSONRPC)
-	$(MAKE) run-explorer
-	sleep 2
 	$(RUNBRIDGESERVICE)
 	sleep 1
 	$(RUNBRIDGEUI)
 
-.PHONY: run-sepolia
-run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
-	$(RUNSTATEDB)
-	$(RUNPOOLDB)
-	$(RUNEVENTDB)
-	$(RUNDACDB)
-	$(RUNDEPLOYSEPOLIA)
-	sleep 1
-	$(RUNDAC)
-	sleep 1
-	$(RUNSETUPDACSEPOLIA)
+.PHONY: run
+run: ## Runs a full node
+	$(RUNL1NETWORK)
+	$(RUNSETUPDACMOCKL1)
+  $(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
 	sleep 3
-	$(RUNSYNC)
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-explorer
+
+.PHONY: run-sepolia
+run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
+	$(RUNDEPLOYSEPOLIA)
+	$(RUNSETUPDACSEPOLIA)
+  $(MAKE) run-db
 	sleep 2
-	$(RUNETHTXMANAGER)
-	$(RUNSEQUENCER)
-	$(RUNSEQUENCESENDER)
-	$(RUNL2GASPRICER)
-	$(RUNAGGREGATOR)
-	$(RUNJSONRPC)
+	$(RUNZKPROVER)
+	$(RUNAPPROVE)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
 	$(MAKE) run-l2-explorer
 
 .PHONY: stop
