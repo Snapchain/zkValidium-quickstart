@@ -480,12 +480,12 @@ stop-approve-matic: ## Stops approve in node container
 
 .PHONY: run-dac
 run-dac: ## Runs the DAC DB and service
-  $(RUNDACDB)
+	$(RUNDACDB)
 	$(RUNDAC)
 
 .PHONY: run-bridge
 run-bridge: ## Runs the native bridge
-  $(RUNBRIDGEDB)
+	$(RUNBRIDGEDB)
 	sleep 1
 	$(RUNBRIDGESERVICE)
 	sleep 1
@@ -495,7 +495,7 @@ run-bridge: ## Runs the native bridge
 run: ## Runs a full node
 	$(RUNL1NETWORK)
 	$(RUNSETUPDACMOCKL1)
-  $(MAKE) run-db
+	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
@@ -509,7 +509,7 @@ run: ## Runs a full node
 run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
 	$(RUNDEPLOYSEPOLIA)
 	$(RUNSETUPDACSEPOLIA)
-  $(MAKE) run-db
+	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
