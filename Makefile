@@ -491,14 +491,26 @@ run-bridge: ## Runs the native bridge
 	sleep 1
 	$(RUNBRIDGEUI)
 
-.PHONY: run
-run: ## Runs a full node
+.PHONY: run-init
+run-init: ## Runs a full node
 	$(RUNL1NETWORK)
 	$(RUNSETUPDACMOCKL1)
 	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-explorer
+
+.PHONY: run-resume
+run-resume: ## Runs a full node
+	$(RUNL1NETWORK)
+	$(MAKE) run-db
+	sleep 2
+	$(RUNZKPROVER)
 	sleep 3
 	$(MAKE) run-node
 	$(MAKE) run-dac
