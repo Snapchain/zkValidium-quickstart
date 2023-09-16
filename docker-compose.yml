@@ -71,7 +71,7 @@ services:
       - CDK_VALIDIUM_NODE_POOL_DB_HOST=cdk-validium-pool-db
       - CDK_VALIDIUM_NODE_SEQUENCER_SENDER_ADDRESS=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
     volumes:
-      - ./sequencer.keystore:/pk/sequencer.keystore
+      - ./config/sequencer.keystore:/pk/sequencer.keystore
       - ./config/test.node.config.toml:/app/config.toml
       - ./config/test.genesis.config.json:/app/genesis.json
     command:
@@ -135,8 +135,8 @@ services:
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
-      - ./sequencer.keystore:/pk/sequencer.keystore
-      - ./aggregator.keystore:/pk/aggregator.keystore
+      - ./config/sequencer.keystore:/pk/sequencer.keystore
+      - ./config/aggregator.keystore:/pk/aggregator.keystore
       - ./config/test.node.config.toml:/app/config.toml
       - ./config/test.genesis.config.json:/app/genesis.json
     command:
@@ -490,7 +490,7 @@ services:
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
-      - ./sequencer.keystore:/pk/keystore
+      - ./config/sequencer.keystore:/pk/keystore
       - ./config/test.node.config.toml:/app/config.toml
       - ./config/test.genesis.config.json:/app/genesis.json
     command:
