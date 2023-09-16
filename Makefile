@@ -27,6 +27,9 @@ DOCKERCOMPOSEPERMISSIONLESSZKPROVER := cdk-validium-permissionless-prover
 DOCKERCOMPOSENODEAPPROVE := cdk-validium-approve
 DOCKERCOMPOSEMETRICS := cdk-validium-metrics
 DOCKERCOMPOSEGRAFANA := grafana
+DOCKERCOMPOSEBRIDGEDB := zkevm-bridge-db
+DOCKERCOMPOSEBRIDGESERVICE := zkevm-bridge-service
+DOCKERCOMPOSEBRIDGEUI := zkevm-bridge-ui
 
 RUNSTATEDB := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSESTATEDB)
 RUNPOOLDB := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEPOOLDB)
@@ -51,6 +54,10 @@ RUNEXPLORERL2 := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEEXPLORERL2)
 RUNEXPLORERL2DB := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEEXPLORERL2DB)
 RUNEXPLORERJSONRPC := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEEXPLORERRPC)
 RUNZKPROVER := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEZKPROVER)
+
+RUNBRIDGEDB := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEBRIDGEDB)
+RUNBRIDGESERVICE := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEBRIDGESERVICE)
+RUNBRIDGEUI := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEBRIDGEUI)
 
 RUNPERMISSIONLESSDB := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEPERMISSIONLESSDB)
 RUNPERMISSIONLESSNODE := $(DOCKERCOMPOSE) up -d $(DOCKERCOMPOSEPERMISSIONLESSNODE)
@@ -298,9 +305,9 @@ stop-db: ## Stops the node database
 
 .PHONY: run-node
 run-node: ## Runs the node
-	$(RUNETHTXMANAGER)
 	$(RUNSYNC)
-	sleep 2
+	sleep 4
+	$(RUNETHTXMANAGER)
 	$(RUNSEQUENCER)
 	$(RUNSEQUENCESENDER)
 	$(RUNL2GASPRICER)
@@ -471,53 +478,45 @@ run-approve-matic: ## Runs approve in node container
 stop-approve-matic: ## Stops approve in node container
 	$(STOPAPPROVE)
 
+.PHONY: run-dac
+run-dac: ## Runs the DAC DB and service
+	$(RUNDACDB)
+	$(RUNDAC)
+
+.PHONY: run-bridge
+run-bridge: ## Runs the native bridge
+	$(RUNBRIDGEDB)
+	sleep 1
+	$(RUNBRIDGESERVICE)
+	sleep 1
+	$(RUNBRIDGEUI)
+
 .PHONY: run
 run: ## Runs a full node
-	$(RUNSTATEDB)
-	$(RUNPOOLDB)
-	$(RUNEVENTDB)
-	$(RUNDACDB)
 	$(RUNL1NETWORK)
-	$(RUNDAC)
-	sleep 1
 	$(RUNSETUPDACMOCKL1)
+	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
 	sleep 3
-	$(RUNSYNC)
-	sleep 2
-	$(RUNETHTXMANAGER)
-	$(RUNSEQUENCER)
-	$(RUNSEQUENCESENDER)
-	$(RUNL2GASPRICER)
-	$(RUNAGGREGATOR)
-	$(RUNJSONRPC)
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
 	$(MAKE) run-explorer
 
 .PHONY: run-sepolia
 run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
-	$(RUNSTATEDB)
-	$(RUNPOOLDB)
-	$(RUNEVENTDB)
-	$(RUNDACDB)
 	$(RUNDEPLOYSEPOLIA)
-	sleep 1
-	$(RUNDAC)
-	sleep 1
 	$(RUNSETUPDACSEPOLIA)
+	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
 	sleep 3
-	$(RUNSYNC)
-	sleep 2
-	$(RUNETHTXMANAGER)
-	$(RUNSEQUENCER)
-	$(RUNSEQUENCESENDER)
-	$(RUNL2GASPRICER)
-	$(RUNAGGREGATOR)
-	$(RUNJSONRPC)
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
 	$(MAKE) run-l2-explorer
 
 .PHONY: stop

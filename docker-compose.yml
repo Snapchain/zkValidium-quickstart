@@ -428,6 +428,62 @@ services:
     command: >
       zkProver -c /usr/src/app/config.json
 
+  zkevm-bridge-db:
+    container_name: zkevm-bridge-db
+    image: postgres
+    ports:
+      - 5438:5432
+    environment:
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=test_db
+    command: ["postgres", "-N", "500"]
+
+  zkevm-bridge-service:
+    container_name: zkevm-bridge-service
+    image: hermeznetwork/zkevm-bridge-service:v0.2.0
+    ports:
+      - 8080:8080
+      - 9090:9090
+    depends_on:
+      - zkevm-bridge-db
+    environment:
+      - ZKEVM_BRIDGE_DATABASE_USER=test_user
+      - ZKEVM_BRIDGE_DATABASE_PASSWORD=test_password
+      - ZKEVM_BRIDGE_DATABASE_NAME=test_db
+      - ZKEVM_BRIDGE_DATABASE_HOST=zkevm-bridge-db
+      - ZKEVM_BRIDGE_DATABASE_PORT=5432
+    volumes:
+      - ./config/test.keystore.claimtx:/pk/keystore.claimtxmanager
+      - ./config/bridge.config.toml:/app/config.toml
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/zkevm-bridge run --cfg /app/config.toml"
+
+  zkevm-bridge-ui:
+    container_name: zkevm-bridge-ui
+    image: hermeznetwork/zkevm-bridge-ui:latest
+    ports:
+      - 8088:80
+    depends_on:
+      - zkevm-bridge-service
+    environment:
+      - ETHEREUM_RPC_URL=http://${COMMON_HOST}:8545
+      - ETHEREUM_EXPLORER_URL=http://${COMMON_HOST}:4000
+      - ETHEREUM_BRIDGE_CONTRACT_ADDRESS=0x4C739372258826995C302CD655beE12689B97d3F
+      - ETHEREUM_FORCE_UPDATE_GLOBAL_EXIT_ROOT=true
+      - ETHEREUM_PROOF_OF_EFFICIENCY_CONTRACT_ADDRESS=0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
+      - POLYGON_ZK_EVM_RPC_URL=http://${COMMON_HOST}:8123
+      - POLYGON_ZK_EVM_EXPLORER_URL=http://${COMMON_HOST}:4000
+      - POLYGON_ZK_EVM_BRIDGE_CONTRACT_ADDRESS=0xff0EE8ea08cEf5cb4322777F5CC3E8A584B8A4A0
+      - POLYGON_ZK_EVM_NETWORK_ID=1
+      - BRIDGE_API_URL=http://${COMMON_HOST}:8080
+      - ENABLE_FIAT_EXCHANGE_RATES=false
+      - ENABLE_OUTDATED_NETWORK_MODAL=false
+      - ENABLE_DEPOSIT_WARNING=true
+      - ENABLE_REPORT_FORM=false
+
   cdk-validium-approve:
     container_name: cdk-validium-approve
     image: hermeznetwork/cdk-validium-node:develop
