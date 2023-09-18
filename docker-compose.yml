@@ -171,6 +171,7 @@ services:
       - 5432:5432
     volumes:
       - ./db/scripts/init_prover_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${ZKEVM_NODE_STATEDB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=state_user
       - POSTGRES_PASSWORD=state_password
@@ -191,6 +192,8 @@ services:
           memory: 1G
     ports:
       - 5433:5432
+    volumes:
+      - ${ZKEVM_NODE_POOLDB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=pool_user
       - POSTGRES_PASSWORD=pool_password
@@ -213,6 +216,7 @@ services:
       - 5435:5432
     volumes:
       - ./db/scripts/init_event_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - ${ZKEVM_NODE_EVENT_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=event_user
       - POSTGRES_PASSWORD=event_password
@@ -246,6 +250,8 @@ services:
     image: postgres
     ports:
       - 5436:5432
+    volumes:
+      - ${ZKEVM_NODE_EXPLORERL1DB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=l1_explorer_user
       - POSTGRES_PASSWORD=l1_explorer_password
@@ -300,6 +306,8 @@ services:
     image: postgres
     ports:
       - 5437:5432
+    volumes:
+      - ${ZKEVM_NODE_EXPLORERL2DB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=l2_explorer_user
       - POSTGRES_PASSWORD=l2_explorer_password
@@ -433,6 +441,8 @@ services:
     image: postgres
     ports:
       - 5438:5432
+    volumes:
+      - ${ZKEVM_NODE_BRIDGEDB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=test_user
       - POSTGRES_PASSWORD=test_password
@@ -586,6 +596,8 @@ services:
       retries: 5
     ports:
       - 5444:5432
+    volumes:
+      - ${ZKEVM_NODE_DANODEDB_DATA_DIR}:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=committee_user
       - POSTGRES_PASSWORD=committee_password
