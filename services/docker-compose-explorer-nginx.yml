@@ -4,8 +4,6 @@ services:
   explorer-proxy:
     image: nginx
     container_name: explorer-proxy
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
     volumes:
       - "../proxy/default.conf.template:/etc/nginx/templates/default.conf.template"
     environment:
@@ -16,8 +14,6 @@ services:
   visualizer-proxy:
     image: nginx
     container_name: visualizer-proxy
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
     volumes:
       - "../proxy/visualizer.conf.template:/etc/nginx/templates/default.conf.template"
     environment:
