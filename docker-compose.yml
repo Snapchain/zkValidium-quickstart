@@ -222,31 +222,26 @@ services:
       - "-N"
       - "500"
 
-  cdk-validium-explorer-l1:
-    container_name: cdk-validium-explorer-l1
-    image: blockscout/blockscout:latest
+  explorer-backend-l1:
+    extends:
+      file: ./services/docker-compose-backend.yml
+      service: explorer-backend
+    container_name: explorer-backend-l1
     ports:
       - 4000:4000
     environment:
       - NETWORK=ETH
       - SUBNETWORK=Local Ethereum
-      - COIN=ETH
-      - ETHEREUM_JSONRPC_VARIANT=geth
       - ETHEREUM_JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
       - ETHEREUM_JSONRPC_TRACE_URL=http://cdk-validium-mock-l1-network:8545
-      - DATABASE_URL=postgres://l1_explorer_user:l1_explorer_password@cdk-validium-explorer-l1-db:5432/l1_explorer_db
-      - SECRET_KEY_BASE=5LSuVfZikCc3HVIyabkfoiqnUfwyhJaam8btXA3g5kHCi5CCu3iS9VZ28bC7LMiE
-      - ECTO_USE_SSL=false
+      - DATABASE_URL=postgres://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
+      - SECRET_KEY_BASE=${EXPLORER_L1_SECRET_KEY_BASE}
       - MIX_ENV=prod
-      - PORT=4000
-      - DISABLE_EXCHANGE_RATES=true
       - INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER=true
       - ETHEREUM_JSONRPC_DISABLE_ARCHIVE_BALANCES=true
-      - API_V2_ENABLED=true
-    command: sh -c "bin/blockscout eval \"Elixir.Explorer.ReleaseTasks.create_and_migrate()\" && bin/blockscout start"
 
-  cdk-validium-explorer-l1-db:
-    container_name: cdk-validium-explorer-l1-db
+  explorer-backend-l1-db:
+    container_name: explorer-backend-l1-db
     image: postgres
     ports:
       - 5436:5432
@@ -278,7 +273,7 @@ services:
 
   explorer-frontend-l1:
     depends_on:
-      - cdk-validium-explorer-l1
+      - explorer-backend-l1
     extends:
       file: ./services/docker-compose-frontend.yml
       service: explorer-frontend
@@ -295,7 +290,7 @@ services:
 
   explorer-stats-db-l1:
     depends_on:
-      - cdk-validium-explorer-l1
+      - explorer-backend-l1
     extends:
       file: ./services/docker-compose-stats.yml
       service: explorer-stats-db
@@ -314,11 +309,11 @@ services:
       - 8153:8050
     environment:
       - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
-      - STATS__BLOCKSCOUT_DB_URL=postgresql://l1_explorer_user:l1_explorer_password@cdk-validium-explorer-l1-db:5432/l1_explorer_db
+      - STATS__BLOCKSCOUT_DB_URL=postgresql://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
 
   explorer-proxy-l1:
     depends_on:
-      - cdk-validium-explorer-l1
+      - explorer-backend-l1
       - explorer-frontend-l1
       - explorer-stats-l1
     extends:
@@ -328,31 +323,32 @@ services:
     ports:
       - 81:80
       - 8082:8080
+
+  explorer-visualizer-proxy:
+    extends:
+      file: ./services/docker-compose-nginx.yml
+      service: visualizer-proxy
+    container_name: 'visualizer-proxy'
+    ports:
       - 8083:8081
 
-  cdk-validium-explorer-l2:
-    container_name: cdk-validium-explorer-l2
+  explorer-backend-l2:
+    extends:
+      file: ./services/docker-compose-backend.yml
+      service: explorer-backend
+    container_name: explorer-backend-l2
     image: blockscout/blockscout-zkevm:latest
     ports:
       - 4001:4000
     environment:
       - NETWORK=POE
       - SUBNETWORK=Polygon Hermez
-      - COIN=ETH
-      - ETHEREUM_JSONRPC_VARIANT=geth
       - ETHEREUM_JSONRPC_HTTP_URL=http://cdk-validium-explorer-json-rpc:8124
-      - DATABASE_URL=postgres://l2_explorer_user:l2_explorer_password@cdk-validium-explorer-l2-db:5432/l2_explorer_db
-      - SECRET_KEY_BASE=PGfceH3KD+rg3Po7hjvvG7vRepRgqA3R/45ApXbLfAhqyrj616/abOijFQ8lte5z
-      - ECTO_USE_SSL=false
+      - DATABASE_URL=postgres://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
+      - SECRET_KEY_BASE=${EXPLORER_L2_SECRET_KEY_BASE}
       - MIX_ENV=prod
-      - LOGO=/images/blockscout_logo.svg
-      - LOGO_FOOTER=/images/blockscout_logo.svg
-      - PORT=4000
-      - DISABLE_EXCHANGE_RATES=true
-      - API_V2_ENABLED=true
       - INDEXER_ZKEVM_BATCHES_ENABLED=true
       - CHAIN_TYPE=polygon_zkevm
-    command: sh -c "bin/blockscout eval \"Elixir.Explorer.ReleaseTasks.create_and_migrate()\" && bin/blockscout start"
 
   cdk-validium-explorer-json-rpc:
     container_name: cdk-validium-explorer-json-rpc
@@ -373,8 +369,8 @@ services:
       - "-c"
       - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc --http.api eth,net,debug,zkevm,txpool,web3"
 
-  cdk-validium-explorer-l2-db:
-    container_name: cdk-validium-explorer-l2-db
+  explorer-backend-l2-db:
+    container_name: explorer-backend-l2-db
     image: postgres
     ports:
       - 5437:5432
@@ -388,7 +384,7 @@ services:
 
   explorer-frontend-l2:
     depends_on:
-      - cdk-validium-explorer-l2
+      - explorer-backend-l2
     extends:
       file: ./services/docker-compose-frontend.yml
       service: explorer-frontend
@@ -409,7 +405,7 @@ services:
 
   explorer-stats-db-l2:
     depends_on:
-      - cdk-validium-explorer-l2
+      - explorer-backend-l2
     extends:
       file: ./services/docker-compose-stats.yml
       service: explorer-stats-db
@@ -428,11 +424,11 @@ services:
       - 8154:8050
     environment:
       - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
-      - STATS__BLOCKSCOUT_DB_URL=postgresql://l2_explorer_user:l2_explorer_password@cdk-validium-explorer-l2-db:5432/l2_explorer_db
+      - STATS__BLOCKSCOUT_DB_URL=postgresql://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
 
   explorer-proxy-l2:
     depends_on:
-      - cdk-validium-explorer-l2
+      - explorer-backend-l2
       - explorer-frontend-l2
       - explorer-stats-l2
     extends:
@@ -442,7 +438,6 @@ services:
     ports:
       - 80:80
       - 8084:8080
-      - 8081:8081
 
   cdk-validium-mock-l1-network:
     container_name: cdk-validium-mock-l1-network
