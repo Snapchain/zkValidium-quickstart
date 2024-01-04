@@ -61,7 +61,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequencer"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequencer"
 
   cdk-validium-sequence-sender:
     container_name: cdk-validium-sequence-sender
@@ -77,7 +77,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequence-sender"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequence-sender"
 
   cdk-validium-json-rpc:
     container_name: cdk-validium-json-rpc
@@ -95,7 +95,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc"
 
   cdk-validium-aggregator:
     container_name: cdk-validium-aggregator
@@ -112,7 +112,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components aggregator"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components aggregator"
 
   cdk-validium-sync:
     container_name: cdk-validium-sync
@@ -125,7 +125,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components synchronizer"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components synchronizer"
 
   cdk-validium-eth-tx-manager:
     container_name: cdk-validium-eth-tx-manager
@@ -142,7 +142,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components eth-tx-manager"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components eth-tx-manager"
 
   cdk-validium-l2gaspricer:
     container_name: cdk-validium-l2gaspricer
@@ -156,7 +156,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components l2gaspricer"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components l2gaspricer"
 
   cdk-validium-state-db:
     container_name: cdk-validium-state-db
@@ -293,7 +293,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc --http.api eth,net,debug,zkevm,txpool,web3"
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc --http.api eth,net,debug,zkevm,txpool,web3"
 
   cdk-validium-explorer-l2-db:
     container_name: cdk-validium-explorer-l2-db
@@ -496,7 +496,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node approve --network custom --custom-network-file /app/genesis.json --key-store-path /pk/keystore --pw testonly --am 115792089237316195423570985008687907853269984665640564039457584007913129639935 -y --cfg /app/config.toml"
+      - "/app/zkevm-node approve --network custom --custom-network-file /app/genesis.json --key-store-path /pk/keystore --pw testonly --am 115792089237316195423570985008687907853269984665640564039457584007913129639935 -y --cfg /app/config.toml"
 
   cdk-validium-permissionless-db:
     container_name: cdk-validium-permissionless-db
@@ -546,7 +546,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
 
   cdk-validium-permissionless-node:
     container_name: cdk-validium-permissionless-node
@@ -573,7 +573,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
+      - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
 
   cdk-validium-data-node-db:
     container_name: cdk-validium-data-node-db
