@@ -48,7 +48,7 @@ services:
 
   cdk-validium-sequencer:
     container_name: cdk-validium-sequencer
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 9092:9091 # needed if metrics enabled
       - 6060:6060
@@ -65,7 +65,7 @@ services:
 
   cdk-validium-sequence-sender:
     container_name: cdk-validium-sequence-sender
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
       - CDK_VALIDIUM_NODE_POOL_DB_HOST=cdk-validium-pool-db
@@ -81,7 +81,7 @@ services:
 
   cdk-validium-json-rpc:
     container_name: cdk-validium-json-rpc
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 8123:8123
       - 8133:8133 # needed if WebSockets enabled
@@ -99,7 +99,7 @@ services:
 
   cdk-validium-aggregator:
     container_name: cdk-validium-aggregator
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 50081:50081
       - 9093:9091 # needed if metrics enabled
@@ -116,7 +116,7 @@ services:
 
   cdk-validium-sync:
     container_name: cdk-validium-sync
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
@@ -129,7 +129,7 @@ services:
 
   cdk-validium-eth-tx-manager:
     container_name: cdk-validium-eth-tx-manager
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 9094:9091 # needed if metrics enabled
     environment:
@@ -146,7 +146,7 @@ services:
 
   cdk-validium-l2gaspricer:
     container_name: cdk-validium-l2gaspricer
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     environment:
       - CDK_VALIDIUM_NODE_POOL_DB_HOST=cdk-validium-pool-db
     volumes:
@@ -278,7 +278,7 @@ services:
 
   cdk-validium-explorer-json-rpc:
     container_name: cdk-validium-explorer-json-rpc
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 8124:8124
       - 8134:8134 # needed if WebSockets enabled
@@ -486,7 +486,7 @@ services:
 
   cdk-validium-approve:
     container_name: cdk-validium-approve
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=cdk-validium-state-db
     volumes:
@@ -522,7 +522,7 @@ services:
 
   cdk-validium-permissionless-node-forced-DAC:
     container_name: cdk-validium-permissionless-node-forced-DAC
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 8125:8125
     environment:
@@ -550,7 +550,7 @@ services:
 
   cdk-validium-permissionless-node:
     container_name: cdk-validium-permissionless-node
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     ports:
       - 8125:8125
     environment:
@@ -622,7 +622,7 @@ services:
 
   cdk-validium-sh:
     container_name: zkevm-sh
-    image: hermeznetwork/cdk-validium-node:develop
+    image: snapchain/cdk-validium-node
     stdin_open: true 
     tty: true
     environment:
