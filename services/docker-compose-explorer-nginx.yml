@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  explorer-proxy:
+    image: nginx
+    container_name: explorer-proxy
+    volumes:
+      - "../proxy/default.conf.template:/etc/nginx/templates/default.conf.template"
+    environment:
+      PROXIED_FRONT_URL: ${PROXIED_FRONT_URL:-http://${COMMON_HOST}}
+      BACK_PROXY_PASS: ${BACK_PROXY_PASS}
+      FRONT_PROXY_PASS: ${FRONT_PROXY_PASS}
+      STATS_PROXY_PASS: ${STATS_PROXY_PASS}
+  visualizer-proxy:
+    image: nginx
+    container_name: visualizer-proxy
+    volumes:
+      - "../proxy/visualizer.conf.template:/etc/nginx/templates/default.conf.template"
+    environment:
+      PROXIED_FRONT_URL: ${PROXIED_FRONT_URL:-http://${COMMON_HOST}}
