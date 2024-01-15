@@ -1,6 +1,6 @@
 # zkValidium-quickstart
 
-Please refer to https://wiki.polygon.technology/docs/cdk/validium/quickstart/ to see how to use this repo.
+Please refer to https://docs.polygon.technology/cdk/get-started/quickstart-validium/ to see how to use this repo.
 
 Make sure to check the **System Requirement** section.
 
