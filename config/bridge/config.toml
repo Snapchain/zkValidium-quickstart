@@ -9,7 +9,7 @@ Password = "test_password"
 Name = "test_db"
 Host = "zkevm-bridge-db"
 Port = "5432"
-MaxConns = 200
+MaxConns = 20
 
 [ClaimTxManager]
 Enabled = true
@@ -17,9 +17,10 @@ FrequencyToMonitorTxs = "1s"
 PrivateKey = {Path = "/pk/keystore.claimtxmanager", Password = "testonly"}
 RetryInterval = "1s"
 RetryNumber = 10
+AuthorizedClaimMessageAddresses = ["0x90F79bf6EB2c4f870365E785982E1f101E93b906"]
 
 [Etherman]
-L1URL = "http://cdk-validium-mock-l1-network:8545"
+L1URL = "http://zkevm-mock-l1-network:8545"
 L2URLs = ["http://cdk-validium-json-rpc:8123"]
 
 [Synchronizer]
@@ -44,7 +45,7 @@ BridgeVersion = "v1"
     Name = "test_db"
     Host = "zkevm-bridge-db"
     Port = "5432"
-    MaxConns = 200
+    MaxConns = 20
 
 [NetworkConfig]
 GenBlockNumber = 80
