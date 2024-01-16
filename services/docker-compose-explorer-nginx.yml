@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   explorer-proxy:
-    image: nginx
+    image: nginx:1.25.3
     container_name: explorer-proxy
     volumes:
       - "../proxy/default.conf.template:/etc/nginx/templates/default.conf.template"
@@ -12,7 +12,7 @@ services:
       FRONT_PROXY_PASS: ${FRONT_PROXY_PASS}
       STATS_PROXY_PASS: ${STATS_PROXY_PASS}
   visualizer-proxy:
-    image: nginx
+    image: nginx:1.25.3
     container_name: visualizer-proxy
     volumes:
       - "../proxy/visualizer.conf.template:/etc/nginx/templates/default.conf.template"

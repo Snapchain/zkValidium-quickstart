@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   explorer-stats-db:
-    image: postgres:14
+    image: postgres:15
     restart: always
     container_name: 'explorer-stats-postgres'
     command: postgres -c 'max_connections=200'
@@ -12,7 +12,7 @@ services:
         POSTGRES_DB: 'explorer_stats_db'
 
   explorer-stats:
-    image: ghcr.io/blockscout/stats:${STATS_DOCKER_TAG:-latest}
+    image: ghcr.io/blockscout/stats:${EXPLORER_DOCKER_TAG_STATS:-latest}
     pull_policy: always
     platform: linux/amd64
     restart: always

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   explorer-sig-provider:
-    image: ghcr.io/blockscout/sig-provider:${SIG_PROVIDER_DOCKER_TAG:-latest}
+    image: ghcr.io/blockscout/sig-provider:${EXPLORER_DOCKER_TAG_SIG_PROVIDER:-latest}
     pull_policy: always
     platform: linux/amd64
     restart: always

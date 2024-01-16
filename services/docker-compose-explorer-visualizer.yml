@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   explorer-visualizer:
-    image: ghcr.io/blockscout/visualizer:${VISUALIZER_DOCKER_TAG:-latest}
+    image: ghcr.io/blockscout/visualizer:${EXPLORER_DOCKER_TAG_VISUALIZER:-latest}
     pull_policy: always
     platform: linux/amd64
     restart: always

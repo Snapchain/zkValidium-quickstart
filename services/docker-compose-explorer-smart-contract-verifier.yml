@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   explorer-smart-contract-verifier:
-    image: ghcr.io/blockscout/smart-contract-verifier:${SMART_CONTRACT_VERIFIER_DOCKER_TAG:-latest}
+    image: ghcr.io/blockscout/smart-contract-verifier:${EXPLORER_DOCKER_TAG_SMART_CONTRACT_VERIFIER:-latest}
     pull_policy: always
     platform: linux/amd64
     restart: always
