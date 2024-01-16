@@ -1,6 +1,6 @@
 {
     "realVerifier": false,
-    "trustedSequencerURL": "http://cdk-validium-json-rpc:8123",
+    "trustedSequencerURL": "http://zkevm-json-rpc:8123",
     "networkName": "cdk-validium",
     "version":"0.0.1",
     "trustedSequencer":"0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",
@@ -8,7 +8,7 @@
     "trustedAggregator":"0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",
     "trustedAggregatorTimeout": 604799,
     "pendingStateTimeout": 604799,
-    "forkID": 1,
+    "forkID": 6,
     "admin":"0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",
     "cdkValidiumOwner": "0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",
     "timelockAddress": "0x617b3a3528F9cDd6630fd3301B9c8911F7Bf063D",
