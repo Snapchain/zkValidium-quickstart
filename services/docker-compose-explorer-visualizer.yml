@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  explorer-visualizer:
+    image: ghcr.io/blockscout/visualizer:${EXPLORER_DOCKER_TAG_VISUALIZER:-latest}
+    pull_policy: always
+    platform: linux/amd64
+    restart: always
+    container_name: 'explorer-visualizer'
+    env_file:
+      -  ../envs/common-visualizer.env
+    ports:
+      - 8152:8050
