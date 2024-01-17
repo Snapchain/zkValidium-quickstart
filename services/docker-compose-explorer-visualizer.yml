@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  # After the contract has been verified, there is "View UML diagram" button in
+  # the interface which opens sol2uml diagram of the contract's functions.
+  #
+  # Examples:
+  # https://eth.blockscout.com/address/0xc54B9F82C1c54E9D4d274d633c7523f2299c42A0?tab=contract
+  # https://eth.blockscout.com/visualize/sol2uml?address=0xc54B9F82C1c54E9D4d274d633c7523f2299c42A0
+  #
+  # Reference: https://github.com/blockscout/blockscout-rs/blob/main/visualizer/README.md
   explorer-visualizer:
     image: ghcr.io/blockscout/visualizer:${EXPLORER_DOCKER_TAG_VISUALIZER:-latest}
     pull_policy: always
