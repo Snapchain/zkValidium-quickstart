@@ -1,5 +1,3 @@
-include .env
-
 DOCKERCOMPOSE := docker compose -f docker-compose.yml
 DOCKERCOMPOSEAPPSEQ := zkevm-sequencer
 DOCKERCOMPOSEAPPSEQSENDER := zkevm-sequence-sender
@@ -582,6 +580,18 @@ run: ## Runs a full node
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-explorer
+
+.PHONY: run-resume
+run-resume: ## Resumes a full node
+	$(MAKE) run-db
+	$(RUNL1NETWORK)
+	sleep 2
+	$(RUNZKPROVER)
 	sleep 3
 	$(MAKE) run-node
 	$(MAKE) run-dac

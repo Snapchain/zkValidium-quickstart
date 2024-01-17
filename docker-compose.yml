@@ -141,6 +141,7 @@ services:
       - 5432:5432
     volumes:
       - ./config/node/db_scripts/init_prover_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - zkevm_state_db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=state_user
       - POSTGRES_PASSWORD=state_password
@@ -161,6 +162,8 @@ services:
           memory: 1G
     ports:
       - 5433:5432
+    volumes:
+      - zkevm_pool_db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=pool_user
       - POSTGRES_PASSWORD=pool_password
@@ -183,6 +186,7 @@ services:
       - 5435:5432
     volumes:
       - ./config/node/db_scripts/init_event_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - zkevm_event_db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=event_user
       - POSTGRES_PASSWORD=event_password
@@ -222,7 +226,7 @@ services:
       - POSTGRES_PASSWORD=l1_explorer_password
       - POSTGRES_DB=l1_explorer_db
     volumes:
-      - explorer_l1_db_data:/var/lib/postgresql/data
+      - explorer_l1_backend_db_data:/var/lib/postgresql/data
     command:
       - "postgres"
       - "-N"
@@ -269,6 +273,8 @@ services:
     container_name: 'explorer-stats-db-l1'
     ports:
       - 7433:5432
+    volumes:
+      - explorer_l1_stats_db_data:/var/lib/postgresql/data
 
   explorer-stats-l1:
     depends_on:
@@ -359,7 +365,7 @@ services:
       - POSTGRES_PASSWORD=l2_explorer_password
       - POSTGRES_DB=l2_explorer_db
     volumes:
-      - explorer_l2_db_data:/var/lib/postgresql/data
+      - explorer_l2_backend_db_data:/var/lib/postgresql/data
     command: [ "postgres", "-N", "500" ]
 
   explorer-frontend-l2:
@@ -393,6 +399,8 @@ services:
     container_name: 'explorer-stats-db-l2'
     ports:
       - 7434:5432
+    volumes:
+      - explorer_l2_stats_db_data:/var/lib/postgresql/data
 
   explorer-stats-l2:
     depends_on:
@@ -559,6 +567,8 @@ services:
       - 5438
     ports:
       - 5438:5432
+    volumes:
+      - zkevm_bridge_db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=test_user
       - POSTGRES_PASSWORD=test_password
@@ -648,6 +658,8 @@ services:
       retries: 5
     ports:
       - 5444:5432
+    volumes:
+      - zkevm_dac_node_db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=committee_user
       - POSTGRES_PASSWORD=committee_password
@@ -659,5 +671,12 @@ services:
 
 volumes:
   deploy-output:
-  explorer_l1_db_data:
-  explorer_l2_db_data:
+  explorer_l1_backend_db_data:
+  explorer_l1_stats_db_data:
+  explorer_l2_backend_db_data:
+  explorer_l2_stats_db_data:
+  zkevm_bridge_db_data:
+  zkevm_dac_node_db_data:
+  zkevm_event_db_data:
+  zkevm_pool_db_data:
+  zkevm_state_db_data:
