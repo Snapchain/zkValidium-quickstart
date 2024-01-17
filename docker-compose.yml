@@ -192,7 +192,7 @@ services:
       - "-N"
       - "500"
 
-  ### Explorers
+  ### Explorer related
   explorer-backend-l1:
     extends:
       file: ./services/docker-compose-explorer-backend.yml
@@ -292,6 +292,11 @@ services:
       file: ./services/docker-compose-explorer-nginx.yml
       service: explorer-proxy
     container_name: 'explorer-proxy-l1'
+    environment:
+      PROXIED_FRONT_URL: http://${COMMON_HOST}:81
+      BACK_PROXY_PASS: http://explorer-backend-l1:4000
+      FRONT_PROXY_PASS: http://explorer-frontend-l1:3000
+      STATS_PROXY_PASS: http://explorer-stats-l1:8050/
     ports:
       - 81:80
       - 8082:8080
@@ -301,6 +306,10 @@ services:
       file: ./services/docker-compose-explorer-nginx.yml
       service: visualizer-proxy
     container_name: 'visualizer-proxy'
+    environment:
+      ## TODO: this URL is L2's url, which seems wrong
+      PROXIED_FRONT_URL: http://${COMMON_HOST}
+      FRONT_PROXY_PASS: http://explorer-visualizer:8050/
     ports:
       - 8083:8081
 
@@ -408,6 +417,11 @@ services:
       file: ./services/docker-compose-explorer-nginx.yml
       service: explorer-proxy
     container_name: 'explorer-proxy-l2'
+    environment:
+      PROXIED_FRONT_URL: http://${COMMON_HOST}
+      BACK_PROXY_PASS: http://explorer-backend-l2:4000
+      FRONT_PROXY_PASS: http://explorer-frontend-l2:3000
+      STATS_PROXY_PASS: http://explorer-stats-l2:8050/
     ports:
       - 80:80
       - 8084:8080
