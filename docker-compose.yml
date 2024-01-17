@@ -307,8 +307,7 @@ services:
       service: visualizer-proxy
     container_name: 'visualizer-proxy'
     environment:
-      ## TODO: this URL is L2's url, which seems wrong
-      PROXIED_FRONT_URL: http://${COMMON_HOST}
+      PROXIED_FRONT_URL: http://${COMMON_HOST}:8083
       FRONT_PROXY_PASS: http://explorer-visualizer:8050/
     ports:
       - 8083:8081
