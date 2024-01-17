@@ -1,6 +1,12 @@
 version: '3.8'
 
 services:
+  # aggregator of ethereum signatures for transactions and events. The source 
+  # code is at https://github.com/blockscout/blockscout-rs/tree/main/sig-provider.
+  # 
+  # TLDR: method signature is used as input for the service. The decoded method 
+  # is in output. Several 3rd party services are used under the hood like 4bytes.
+  # In the future, the service will be updated to use ETH bytecode DB as a primary source.
   explorer-sig-provider:
     image: ghcr.io/blockscout/sig-provider:${EXPLORER_DOCKER_TAG_SIG_PROVIDER:-latest}
     pull_policy: always
