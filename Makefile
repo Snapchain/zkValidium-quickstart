@@ -136,6 +136,7 @@ STOPAPPROVE := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSENODEAPPROVE) && $(DOCKERCOMP
 STOPMETRICS := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSEMETRICS) && $(DOCKERCOMPOSE) rm -f $(DOCKERCOMPOSEMETRICS)
 
 STOP := $(DOCKERCOMPOSE) down --remove-orphans
+STOPCLEAN := $(DOCKERCOMPOSE) down --remove-orphans -v
 
 RUNDACDB := docker compose up -d zkevm-data-node-db
 STOPDACDB := docker compose stop zkevm-data-node-db && docker compose rm -f zkevm-data-node-db
@@ -615,6 +616,10 @@ run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
 .PHONY: stop
 stop: ## Stops all services
 	$(STOP)
+
+.PHONY: stop-clean
+stop-clean: ## Stops all services and remove volumes
+	$(STOPCLEAN)
 
 .PHONY: ship
 ship: ## Builds docker images and run them
