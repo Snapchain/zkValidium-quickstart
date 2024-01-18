@@ -441,6 +441,7 @@ services:
       - 8546:8546
     volumes:
       - deploy-output:/deploymentOutput
+      - zkevm_mock_l1_geth_data:/geth_data
     command:
       - "--http"
       - "--http.api"
@@ -678,5 +679,6 @@ volumes:
   zkevm_bridge_db_data:
   zkevm_dac_node_db_data:
   zkevm_event_db_data:
+  zkevm_mock_l1_geth_data:
   zkevm_pool_db_data:
   zkevm_state_db_data:
