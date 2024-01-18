@@ -313,7 +313,7 @@ services:
       service: visualizer-proxy
     container_name: 'visualizer-proxy'
     environment:
-      PROXIED_FRONT_URL: http://${COMMON_HOST}:8083
+      PROXIED_FRONT_URL: http://${COMMON_HOST}
       FRONT_PROXY_PASS: http://explorer-visualizer:8050/
     ports:
       - 8083:8081
