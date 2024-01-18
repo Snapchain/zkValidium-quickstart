@@ -752,7 +752,9 @@ ps: ## Chekc all running services
 
 .PHONY: ps-exited
 ps-exited: ## Chekc all exited services
-	$(DOCKERCOMPOSE) ps -a --format "table {{.Service}}\t{{.Image}}\t{{.Status}}" | grep 'Exited'
+	$(DOCKERCOMPOSE) ps -a --format "table {{.Service}}\t{{.Image}}\t{{.Status}}" \
+		| grep 'Exited' \
+		|| echo "No exited containers"
 
 ## Help display.
 ## Pulls comments from beside commands and prints a nicely formatted
