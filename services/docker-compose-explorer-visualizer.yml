@@ -18,4 +18,5 @@ services:
     env_file:
       -  ../envs/common-visualizer.env
     ports:
-      - 8152:8050
+      - target: 8050
+        published: 8152
