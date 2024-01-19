@@ -14,4 +14,5 @@ services:
     restart: always
     container_name: 'explorer-sig-provider'
     ports:
-      - 8151:8050
+      - target: 8050
+        published: 8151

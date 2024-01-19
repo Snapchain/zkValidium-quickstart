@@ -202,7 +202,7 @@ services:
       file: ./services/docker-compose-explorer-backend.yml
       service: explorer-backend
     container_name: explorer-backend-l1
-    image: blockscout/blockscout:${EXPLORER_DOCKER_TAG_L1_BACKEND:-master}
+    image: blockscout/blockscout:${EXPLORER_DOCKER_TAG_L1_BACKEND:-latest}
     ports:
       - 4000:4000
     environment:

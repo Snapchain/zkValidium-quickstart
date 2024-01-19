@@ -10,4 +10,5 @@ services:
     env_file:
       -  ../envs/common-smart-contract-verifier.env
     ports:
-      - 8150:8050
+      - target: 8050
+        published: 8150
