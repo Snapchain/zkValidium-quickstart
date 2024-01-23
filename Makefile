@@ -613,6 +613,28 @@ run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
 	$(MAKE) run-bridge
 	$(MAKE) run-l2-explorer
 
+.PHONY: gasless-on gasless-off
+gasless-on gasless-off:
+	@:
+
+.PHONY: gasless
+gasless: ## Controls gasless mode
+	@if [ "$(MAKECMDGOALS)" = "gasless on" ]; then \
+		sed -i 's/DefaultMinGasPriceAllowed = 1000000000/DefaultMinGasPriceAllowed = 0/g' config/node/config.toml; \
+		sed -i 's/EnableL2SuggestedGasPricePolling = true/EnableL2SuggestedGasPricePolling = false/g' config/node/config.toml; \
+		sed -i 's/DefaultGasPriceWei = 1000000000/DefaultGasPriceWei = 0/g' config/node/config.toml; \
+	elif [ "$(MAKECMDGOALS)" = "gasless off" ]; then \
+		sed -i 's/DefaultMinGasPriceAllowed = 0/DefaultMinGasPriceAllowed = 1000000000/g' config/node/config.toml; \
+		sed -i 's/EnableL2SuggestedGasPricePolling = false/EnableL2SuggestedGasPricePolling = true/g' config/node/config.toml; \
+		sed -i 's/DefaultGasPriceWei = 0/DefaultGasPriceWei = 1000000000/g' config/node/config.toml; \
+	else \
+		echo "Invalid command. Use 'make gasless on' or 'make gasless off'"; \
+	fi
+
+## to prevent make from complaining about "No rule to make target 'on'/'off'"
+%:
+	@:
+
 .PHONY: stop
 stop: ## Stops all services
 	$(STOP)
