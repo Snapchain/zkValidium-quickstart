@@ -324,6 +324,7 @@ services:
       - NETWORK=POE
       - SUBNETWORK=Polygon Hermez
       - ETHEREUM_JSONRPC_HTTP_URL=http://zkevm-explorer-json-rpc:8124
+      - ETHEREUM_JSONRPC_TRACE_URL=http://zkevm-explorer-json-rpc:8124
       - DATABASE_URL=postgres://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
       - SECRET_KEY_BASE=${EXPLORER_L2_SECRET_KEY_BASE}
       - MIX_ENV=prod
