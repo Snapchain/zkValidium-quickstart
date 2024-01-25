@@ -328,6 +328,7 @@ services:
       - SECRET_KEY_BASE=${EXPLORER_L2_SECRET_KEY_BASE}
       - MIX_ENV=prod
       - INDEXER_ZKEVM_BATCHES_ENABLED=true
+      - INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER=true
       - CHAIN_TYPE=polygon_zkevm
 
   zkevm-explorer-json-rpc:
