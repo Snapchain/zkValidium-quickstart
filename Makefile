@@ -635,6 +635,11 @@ gasless: ## Controls gasless mode
 %:
 	@:
 
+.PHONY: set-env
+set-env:
+	cp .env.example .env
+	sed -i 's/COMMON_HOST=localhost/COMMON_HOST=$(host)/' .env
+
 .PHONY: stop
 stop: ## Stops all services
 	$(STOP)
