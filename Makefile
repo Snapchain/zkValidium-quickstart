@@ -575,6 +575,7 @@ run-bridge: ## Runs the native bridge
 
 .PHONY: run
 run: ## Runs a full node
+	$(MAKE) gasless on
 	$(MAKE) run-db
 	$(RUNL1NETWORK)
 	$(RUNSETUPDACMOCKL1)
@@ -647,6 +648,7 @@ stop: ## Stops all services
 .PHONY: stop-clean
 stop-clean: ## Stops all services and remove volumes
 	$(STOPCLEAN)
+	$(MAKE) gasless on
 
 .PHONY: ship
 ship: ## Builds docker images and run them
