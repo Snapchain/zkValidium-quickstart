@@ -587,6 +587,7 @@ run: ## Runs a full node
 	$(MAKE) run-dac
 	$(MAKE) run-bridge
 	$(MAKE) run-explorer
+	$(MAKE) run-metrics
 
 .PHONY: run-resume
 run-resume: ## Resumes a full node
@@ -599,6 +600,7 @@ run-resume: ## Resumes a full node
 	$(MAKE) run-dac
 	$(MAKE) run-bridge
 	$(MAKE) run-explorer
+	$(MAKE) run-metrics
 
 .PHONY: run-sepolia
 run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
