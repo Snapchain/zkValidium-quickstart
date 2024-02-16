@@ -260,6 +260,7 @@ services:
       - NEXT_PUBLIC_NETWORK_SHORT_NAME=Local Ethereum
       - NEXT_PUBLIC_NETWORK_ID=1337
       - NEXT_PUBLIC_NETWORK_RPC_URL=http://${COMMON_HOST}:8545
+      - NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=${EXPLORER_WALLET_CONNECT_PROJECT_ID}
       - NEXT_PUBLIC_STATS_API_HOST=http://${COMMON_HOST}:8082
     ports:
       - 3000:3000
@@ -383,6 +384,7 @@ services:
       - NEXT_PUBLIC_NETWORK_SHORT_NAME=zkEVM
       - NEXT_PUBLIC_NETWORK_ID=1001
       - NEXT_PUBLIC_NETWORK_RPC_URL=http://${COMMON_HOST}:8123
+      - NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=${EXPLORER_WALLET_CONNECT_PROJECT_ID}
       # TODO: should not use the main branch
       - NEXT_PUBLIC_NETWORK_LOGO=https://raw.githubusercontent.com/blockscout/frontend-configs/main/configs/network-logos/polygon.svg
       - NEXT_PUBLIC_NETWORK_ICON=https://raw.githubusercontent.com/blockscout/frontend-configs/main/configs/network-icons/polygon-short.svg
