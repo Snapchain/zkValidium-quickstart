@@ -330,6 +330,7 @@ services:
       - MIX_ENV=prod
       - INDEXER_ZKEVM_BATCHES_ENABLED=true
       - CHAIN_TYPE=polygon_zkevm
+      - CACHE_BLOCK_COUNT_PERIOD=5s
 
   zkevm-explorer-json-rpc:
     container_name: zkevm-explorer-json-rpc
