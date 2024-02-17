@@ -12,8 +12,6 @@ services:
       - 6060:6060
       - 6900:6900 # Data stream server
     environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
       - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
       - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
@@ -29,8 +27,6 @@ services:
     container_name: zkevm-sequence-sender
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
     environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
       - ZKEVM_NODE_SEQUENCER_SENDER_ADDRESS=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
       - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
       - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
@@ -51,8 +47,6 @@ services:
       - 8133:8133 # needed if WebSockets enabled
       - 9091:9091 # needed if metrics enabled
     environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
       - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
       - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
@@ -117,8 +111,6 @@ services:
   zkevm-l2gaspricer:
     container_name: zkevm-l2gaspricer
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
-    environment:
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
     volumes:
       - ./test.keystore:/pk/keystore
       - ./config/node/config.toml:/app/config.toml
@@ -346,8 +338,6 @@ services:
       - 8124:8124
       - 8134:8134 # needed if WebSockets enabled
     environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
       - ZKEVM_NODE_RPC_PORT=8124
       - ZKEVM_NODE_RPC_WEBSOCKETS_PORT=8134
     volumes:
@@ -655,9 +645,6 @@ services:
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
     stdin_open: true 
     tty: true
-    environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_POOL_DB_HOST=zkevm-pool-db
     volumes:
       - ./config/node/config.toml:/app/config.toml
       - ./config/node/genesis.config.json:/app/genesis.json
