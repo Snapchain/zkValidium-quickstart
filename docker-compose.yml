@@ -202,7 +202,7 @@ services:
       - SUBNETWORK=Local Ethereum
       - ETHEREUM_JSONRPC_HTTP_URL=http://zkevm-mock-l1-network:8545
       - ETHEREUM_JSONRPC_TRACE_URL=http://zkevm-mock-l1-network:8545
-      - DATABASE_URL=postgres://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
+      - DATABASE_URL=postgresql://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
       - SECRET_KEY_BASE=${EXPLORER_L1_SECRET_KEY_BASE}
       - MIX_ENV=prod
       - INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER=true
@@ -279,7 +279,7 @@ services:
     ports:
       - 8153:8050
     environment:
-      - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
+      - STATS__DB_URL=postgresql://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
       - STATS__BLOCKSCOUT_DB_URL=postgresql://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
 
   explorer-proxy-l1:
@@ -324,7 +324,7 @@ services:
       - SUBNETWORK=Polygon Hermez
       - ETHEREUM_JSONRPC_HTTP_URL=http://zkevm-explorer-json-rpc:8124
       - ETHEREUM_JSONRPC_TRACE_URL=http://zkevm-explorer-json-rpc:8124
-      - DATABASE_URL=postgres://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
+      - DATABASE_URL=postgresql://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
       - SECRET_KEY_BASE=${EXPLORER_L2_SECRET_KEY_BASE}
       - MIX_ENV=prod
       - INDEXER_ZKEVM_BATCHES_ENABLED=true
@@ -406,7 +406,7 @@ services:
     ports:
       - 8154:8050
     environment:
-      - STATS__DB_URL=postgres://explorer_stats_user:explorer_stats_password@explorer-stats-db-l1:5432/explorer_stats_db
+      - STATS__DB_URL=postgresql://explorer_stats_user:explorer_stats_password@explorer-stats-db-l2:5432/explorer_stats_db
       - STATS__BLOCKSCOUT_DB_URL=postgresql://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
 
   explorer-proxy-l2:
