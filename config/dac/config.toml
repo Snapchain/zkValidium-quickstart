@@ -1,4 +1,4 @@
-PrivateKey = {Path = "/pk/test-member.keystore", Password = "testonly"}
+PrivateKey = {Path = "/pk/dac-member.keystore", Password = "testonly"}
 
 [L1]
 WsURL = "ws://zkevm-mock-l1-network:8546"

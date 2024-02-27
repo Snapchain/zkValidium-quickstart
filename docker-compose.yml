@@ -492,7 +492,7 @@ services:
       - 8444:8444
     volumes:
       - ./config/dac/config.toml:/app/config.toml
-      - ./config/dac/test-member.keystore:/pk/test-member.keystore
+      - ./config/dac/dac-member.keystore:/pk/dac-member.keystore
     command:
       - "/bin/sh"
       - "-c"
