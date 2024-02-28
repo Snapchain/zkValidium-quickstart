@@ -603,18 +603,30 @@ run-resume: ## Resumes a full node
 	$(MAKE) run-metrics
 
 .PHONY: run-sepolia
-run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
-	$(RUNDEPLOYSEPOLIA)
-	$(RUNSETUPDACSEPOLIA)
+run-sepolia:
+	$(MAKE) gasless on
 	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
-	$(RUNAPPROVE)
 	sleep 3
 	$(MAKE) run-node
 	$(MAKE) run-dac
 	$(MAKE) run-bridge
 	$(MAKE) run-l2-explorer
+	$(MAKE) run-metrics
+
+.PHONY: run-sepolia-resume
+run-sepolia-resume:
+	$(MAKE) gasless off
+	$(MAKE) run-db
+	sleep 2
+	$(RUNZKPROVER)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-l2-explorer
+	$(MAKE) run-metrics
 
 .PHONY: gasless-on gasless-off
 gasless-on gasless-off:
