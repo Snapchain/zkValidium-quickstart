@@ -615,6 +615,12 @@ run-sepolia:
 	$(MAKE) run-l2-explorer
 	$(MAKE) run-metrics
 
+.PHONY: run-sepolia-restart
+run-sepolia-restart:
+	$(MAKE) gasless off
+	$(MAKE) stop-node
+	$(MAKE) run-node
+
 .PHONY: run-sepolia-resume
 run-sepolia-resume:
 	$(MAKE) gasless off
