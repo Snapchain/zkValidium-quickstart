@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "set:keystore": "node scripts/set-keystore.js",
-    "set:configs": "node scripts/set-configs.js"
+    "set:configs": "node scripts/set-configs.js",
+    "set:compose": "node scripts/set-compose.js"
   },
   "keywords": [],
   "author": "",
