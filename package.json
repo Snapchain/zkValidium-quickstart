@@ -1,0 +1,13 @@
+{
+  "name": "zkvalidium-quickstart",
+  "version": "1.0.0",
+  "description": "Please refer to https://docs.polygon.technology/cdk/get-started/quickstart-validium/ to see how to use this repo.",
+  "main": "index.js",
+  "scripts": {
+    "set:keystore": "node scripts/set-keystore.js",
+    "set:configs": "node scripts/set-configs.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

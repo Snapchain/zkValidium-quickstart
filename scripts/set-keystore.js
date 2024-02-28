@@ -1,5 +1,5 @@
 /*
- * Usage: node ./scripts/set-keystore.js wallets.txt 
+ * Usage: npm run set:keystore wallets.txt
  */
 
 const fs = require('fs');

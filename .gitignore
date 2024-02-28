@@ -2,3 +2,4 @@
 .env
 datastream.db/
 datastream.bin
+node_modules
