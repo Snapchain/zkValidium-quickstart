@@ -60,6 +60,7 @@ function updateNodeConfigToml(deployOutput, configTomlPath) {
     configContent = configContent.replace(/(L2Coinbase\s*=\s*)".*"/, `$1"${deployData.trustedSequencer}"`);
     configContent = configContent.replace(/(SenderAddress\s*=\s*)".*"/, `$1"${deployData.trustedAggregator}"`);
     configContent = configContent.replace(/(URL\s*=\s*)"http:\/\/zkevm-mock-l1-network:8545"/, `$1"${process.env.L1_RPC_URL}"`);
+    configContent = configContent.replace(/(\s*ApiKey\s*=\s*)".*"/, `$1"${process.env.ETHERSCAN_API_KEY}"`);
 
     configContent = replaceKeystorePassword(configContent);
 
