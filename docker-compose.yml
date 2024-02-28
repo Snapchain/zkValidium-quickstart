@@ -11,9 +11,6 @@ services:
       - 9092:9091 # needed if metrics enabled
       - 6060:6060
       - 6900:6900 # Data stream server
-    environment:
-      - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
-      - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
       - ./config/node/config.toml:/app/config.toml
       - ./config/node/genesis.config.json:/app/genesis.json
@@ -26,10 +23,6 @@ services:
   zkevm-sequence-sender:
     container_name: zkevm-sequence-sender
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
-    environment:
-      - ZKEVM_NODE_SEQUENCER_SENDER_ADDRESS=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
-      - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
-      - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
       - ./config/node/sequencer.keystore:/pk/sequencer.keystore
       - ./config/node/config.toml:/app/config.toml
@@ -46,9 +39,6 @@ services:
       - 8123:8123
       - 8133:8133 # needed if WebSockets enabled
       - 9091:9091 # needed if metrics enabled
-    environment:
-      - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
-      - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
       - ./config/node/config.toml:/app/config.toml
       - ./config/node/genesis.config.json:/app/genesis.json
@@ -63,9 +53,6 @@ services:
     ports:
       - 50081:50081
       - 9093:9091 # needed if metrics enabled
-    environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_AGGREGATOR_SENDER_ADDRESS=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
     volumes:
       - ./config/node/config.toml:/app/config.toml
       - ./config/node/genesis.config.json:/app/genesis.json
@@ -79,10 +66,6 @@ services:
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
     ports:
       - 9095:9091 # needed if metrics enabled
-    environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
-      - ZKEVM_NODE_MTCLIENT_URI=${ZKEVM_NODE_MTCLIENT_URI}
-      - ZKEVM_NODE_EXECUTOR_URI=${ZKEVM_NODE_EXECUTOR_URI}
     volumes:
       - ./config/node/config.toml:/app/config.toml
       - ./config/node/genesis.config.json:/app/genesis.json
@@ -96,8 +79,6 @@ services:
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
     ports:
       - 9094:9091 # needed if metrics enabled
-    environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
     volumes:
       - ./config/node/sequencer.keystore:/pk/sequencer.keystore
       - ./config/node/aggregator.keystore:/pk/aggregator.keystore
@@ -200,8 +181,8 @@ services:
     environment:
       - NETWORK=ETH
       - SUBNETWORK=Local Ethereum
-      - ETHEREUM_JSONRPC_HTTP_URL=http://zkevm-mock-l1-network:8545
-      - ETHEREUM_JSONRPC_TRACE_URL=http://zkevm-mock-l1-network:8545
+      - ETHEREUM_JSONRPC_HTTP_URL=${L1_RPC_URL}
+      - ETHEREUM_JSONRPC_TRACE_URL=${L1_RPC_URL}
       - DATABASE_URL=postgresql://l1_explorer_user:l1_explorer_password@explorer-backend-l1-db:5432/l1_explorer_db
       - SECRET_KEY_BASE=${EXPLORER_L1_SECRET_KEY_BASE}
       - MIX_ENV=prod
@@ -509,7 +490,7 @@ services:
     volumes:
       - deploy-output:/shared
     environment:
-      - JSONRPC_HTTP_URL=http://zkevm-mock-l1-network:8545
+      - JSONRPC_HTTP_URL=${L1_RPC_URL}
       - DAC_URL=http://zkevm-data-availability:8444
       - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
     command:
@@ -617,8 +598,6 @@ services:
   zkevm-approve:
     container_name: zkevm-approve
     image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
-    environment:
-      - ZKEVM_NODE_STATE_DB_HOST=zkevm-state-db
     volumes:
       - ./config/node/sequencer.keystore:/pk/keystore
       - ./config/node/config.toml:/app/config.toml
