@@ -23,9 +23,9 @@ function updateBridgeConfigToml(deployOutput, genesisConfig, configTomlPath) {
     let configContent = fs.readFileSync(configTomlPath, 'utf8');
 
     configContent = configContent.replace(/(GenBlockNumber\s*=\s*)\d+/, `$1${deployData.deploymentBlockNumber}`);
-
     configContent = configContent.replace(/(PolygonBridgeAddress\s*=\s*)".*"/, `$1"${deployData.polygonZkEVMBridgeAddress}"`);
     configContent = configContent.replace(/(PolygonZkEVMGlobalExitRootAddress\s*=\s*)".*"/, `$1"${deployData.polygonZkEVMGlobalExitRootAddress}"`);
+    configContent = configContent.replace(/(L1URL\s*=\s*)".*"/, `$1"${process.env.L1_RPC_URL}"`);
 
     // Find the address for "PolygonZkEVMBridge proxy" in genesis.config.json
     const bridgeProxy = genesisData.genesis.find(item => item.contractName === "PolygonZkEVMBridge proxy");
@@ -45,6 +45,8 @@ function updateDACConfigToml(deployOutput, configTomlPath) {
 
     configContent = configContent.replace(/(CDKValidiumAddress\s*=\s*)".*"/, `$1"${deployData.cdkValidiumAddress}"`);
     configContent = configContent.replace(/(DataCommitteeAddress\s*=\s*)".*"/, `$1"${deployData.cdkDataCommitteeContract}"`);
+    configContent = configContent.replace(/(RpcURL\s*=\s*)".*"/, `$1"${process.env.L1_RPC_URL}"`);
+    configContent = configContent.replace(/(WsURL\s*=\s*)".*"/, `$1"${process.env.L1_WS_RPC_URL}"`);
 
     configContent = replaceKeystorePassword(configContent);
 
@@ -57,6 +59,7 @@ function updateNodeConfigToml(deployOutput, configTomlPath) {
 
     configContent = configContent.replace(/(L2Coinbase\s*=\s*)".*"/, `$1"${deployData.trustedSequencer}"`);
     configContent = configContent.replace(/(SenderAddress\s*=\s*)".*"/, `$1"${deployData.trustedAggregator}"`);
+    configContent = configContent.replace(/(URL\s*=\s*)"http:\/\/zkevm-mock-l1-network:8545"/, `$1"${process.env.L1_RPC_URL}"`);
 
     configContent = replaceKeystorePassword(configContent);
 
