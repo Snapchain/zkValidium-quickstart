@@ -574,11 +574,16 @@ services:
 
   zkevm-bridge-ui:
     container_name: zkevm-bridge-ui
-    image: hermeznetwork/zkevm-bridge-ui:mainnet
+    image: enzoalwyn/testenze:latest
     ports:
       - 8088:80
     depends_on:
       - zkevm-bridge-service
+    volumes:
+      - ./config/bridge/ui/logo.svg:/app/src/assets/polygon-zkevm-logo.svg
+      - ./config/bridge/ui/l1.svg:/app/src/assets/icons/chains/ethereum.svg
+      - ./config/bridge/ui/l2.svg:/app/src/assets/icons/chains/polygon-zkevm.svg
+      - ./config/bridge/ui/icon.png:/app/public/favicon.ico
     environment:
       - ETHEREUM_RPC_URL=${L1_RPC_URL}
       - ETHEREUM_EXPLORER_URL=${L1_EXPLORER_URL}
@@ -594,6 +599,7 @@ services:
       - ENABLE_OUTDATED_NETWORK_MODAL=false
       - ENABLE_DEPOSIT_WARNING=true
       - ENABLE_REPORT_FORM=false
+      - REPLACE_NAME='Snapchain zkEVM'
 
   zkevm-approve:
     container_name: zkevm-approve
