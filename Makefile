@@ -578,7 +578,6 @@ run: ## Runs a full node
 	$(MAKE) gasless on
 	$(MAKE) run-db
 	$(RUNL1NETWORK)
-	$(RUNSETUPDACMOCKL1)
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)

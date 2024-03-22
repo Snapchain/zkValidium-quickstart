@@ -6,7 +6,7 @@ networks:
 services:
   zkevm-sequencer:
     container_name: zkevm-sequencer
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 9092:9091 # needed if metrics enabled
       - 6060:6060
@@ -22,7 +22,7 @@ services:
 
   zkevm-sequence-sender:
     container_name: zkevm-sequence-sender
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     volumes:
       - ./config/node/sequencer.keystore:/pk/sequencer.keystore
       - ./config/node/config.toml:/app/config.toml
@@ -34,7 +34,7 @@ services:
 
   zkevm-json-rpc:
     container_name: zkevm-json-rpc
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 8123:8123
       - 8133:8133 # needed if WebSockets enabled
@@ -49,7 +49,7 @@ services:
 
   zkevm-aggregator:
     container_name: zkevm-aggregator
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 50081:50081
       - 9093:9091 # needed if metrics enabled
@@ -63,7 +63,7 @@ services:
 
   zkevm-sync:
     container_name: zkevm-sync
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 9095:9091 # needed if metrics enabled
     volumes:
@@ -76,7 +76,7 @@ services:
 
   zkevm-eth-tx-manager:
     container_name: zkevm-eth-tx-manager
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 9094:9091 # needed if metrics enabled
     volumes:
@@ -91,7 +91,7 @@ services:
 
   zkevm-l2gaspricer:
     container_name: zkevm-l2gaspricer
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     volumes:
       - ./test.keystore:/pk/keystore
       - ./config/node/config.toml:/app/config.toml
@@ -314,7 +314,7 @@ services:
 
   zkevm-explorer-json-rpc:
     container_name: zkevm-explorer-json-rpc
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     ports:
       - 8124:8124
       - 8134:8134 # needed if WebSockets enabled
@@ -410,7 +410,7 @@ services:
 
   zkevm-mock-l1-network:
     container_name: zkevm-mock-l1-network
-    image: snapchain/geth-cdk-validium-contracts:no-premint
+    image: snapchain/geth-cdk-validium-contracts:v0.0.3
     ports:
       - 8545:8545
       - 8546:8546
@@ -462,7 +462,7 @@ services:
     depends_on:
       zkevm-data-node-db:
         condition: service_healthy
-    image: hermeznetwork/cdk-data-availability:v0.0.3
+    image: 0xpolygon/cdk-data-availability:0.0.6
     deploy:
       resources:
         limits:
@@ -520,7 +520,7 @@ services:
 
   zkevm-prover:
     container_name: zkevm-prover
-    image: hermeznetwork/zkevm-prover:v3.0.2
+    image: hermeznetwork/zkevm-prover:v5.0.7
     ports:
       - 50061:50061 # MT
       - 50071:50071 # Executor
@@ -554,7 +554,7 @@ services:
   # from https://github.com/0xPolygonHermez/zkevm-bridge-service/blob/v0.3.1/docker-compose.yml
   zkevm-bridge-service:
     container_name: zkevm-bridge-service
-    image: hermeznetwork/zkevm-bridge-service:v0.3.1
+    image: hermeznetwork/zkevm-bridge-service:v0.4.2
     ports:
       - 8080:8080
       - 9080:9090
@@ -574,7 +574,7 @@ services:
 
   zkevm-bridge-ui:
     container_name: zkevm-bridge-ui
-    image: hermeznetwork/zkevm-bridge-ui:mainnet
+    image: hermeznetwork/zkevm-bridge-ui:latest
     ports:
       - 8088:80
     depends_on:
@@ -597,7 +597,7 @@ services:
 
   zkevm-approve:
     container_name: zkevm-approve
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     volumes:
       - ./config/node/sequencer.keystore:/pk/keystore
       - ./config/node/config.toml:/app/config.toml
@@ -621,7 +621,7 @@ services:
 
   zkevm-sh:
     container_name: zkevm-sh
-    image: hermeznetwork/cdk-validium-node:v0.0.3-RC2
+    image: 0xpolygon/cdk-validium-node:0.6.2-cdk
     stdin_open: true 
     tty: true
     volumes:
