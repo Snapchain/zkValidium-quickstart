@@ -74,6 +74,7 @@ WriteTimeout = "60s"
 MaxRequestsPerIPAndSecond = 5000
 SequencerNodeURI = ""
 EnableL2SuggestedGasPricePolling = false
+BatchRequestsEnabled = true
 	[RPC.WebSockets]
 		Enabled = true
 		Port = 8133
@@ -150,6 +151,7 @@ CleanupLockedProofsInterval = "2m"
 GeneratingProofCleanupThreshold = "10m"
 UpgradeEtrogBatchNumber = 0
 BatchProofL1BlockConfirmations = 2
+SettlementBackend = "l1"
 
 [EthTxManager]
 ForcedGas = 0
