@@ -7,8 +7,7 @@ PolygonValidiumAddress = "0x1F708C24a0D3A740cD47cC0444E9480899f3dA7D"
 DataCommitteeAddress = "0x68B1D87F95878fE05B998F19b66F4baba5De1aed"
 Timeout = "3m"
 RetryPeriod = "5s"
-BlockBatchSize = 32
-TrackSequencer = true
+BlockBatchSize = "32"
 GenesisBlock = "31"
 
 [Log]
