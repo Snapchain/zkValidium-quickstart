@@ -1,11 +1,11 @@
 version: "3.5"
 networks:
   default:
-    name: zkevm
+    name: cdk-validium
     
 services:
-  zkevm-sequencer:
-    container_name: zkevm-sequencer
+  cdk-validium-sequencer:
+    container_name: cdk-validium-sequencer
     user: root
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
@@ -21,8 +21,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequencer"
 
-  zkevm-sequence-sender:
-    container_name: zkevm-sequence-sender
+  cdk-validium-sequence-sender:
+    container_name: cdk-validium-sequence-sender
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     volumes:
       - ./config/node/sequencer.keystore:/pk/sequencer.keystore
@@ -33,8 +33,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components sequence-sender"
 
-  zkevm-json-rpc:
-    container_name: zkevm-json-rpc
+  cdk-validium-json-rpc:
+    container_name: cdk-validium-json-rpc
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
       - 8123:8123
@@ -48,8 +48,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components rpc"
 
-  zkevm-aggregator:
-    container_name: zkevm-aggregator
+  cdk-validium-aggregator:
+    container_name: cdk-validium-aggregator
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
       - 50081:50081
@@ -63,8 +63,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components aggregator"
 
-  zkevm-sync:
-    container_name: zkevm-sync
+  cdk-validium-sync:
+    container_name: cdk-validium-sync
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
       - 9095:9091 # needed if metrics enabled
@@ -76,8 +76,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components synchronizer"
 
-  zkevm-eth-tx-manager:
-    container_name: zkevm-eth-tx-manager
+  cdk-validium-eth-tx-manager:
+    container_name: cdk-validium-eth-tx-manager
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
       - 9094:9091 # needed if metrics enabled
@@ -91,8 +91,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components eth-tx-manager"
 
-  zkevm-l2gaspricer:
-    container_name: zkevm-l2gaspricer
+  cdk-validium-l2gaspricer:
+    container_name: cdk-validium-l2gaspricer
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     volumes:
       - ./test.keystore:/pk/keystore
@@ -103,8 +103,8 @@ services:
       - "-c"
       - "/app/zkevm-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components l2gaspricer"
 
-  zkevm-state-db:
-    container_name: zkevm-state-db
+  cdk-validium-state-db:
+    container_name: cdk-validium-state-db
     image: postgres:15
     deploy:
       resources:
@@ -126,8 +126,8 @@ services:
       - "-N"
       - "500"
 
-  zkevm-pool-db:
-    container_name: zkevm-pool-db
+  cdk-validium-pool-db:
+    container_name: cdk-validium-pool-db
     image: postgres:15
     deploy:
       resources:
@@ -148,8 +148,8 @@ services:
       - "-N"
       - "500"
 
-  zkevm-event-db:
-    container_name: zkevm-event-db
+  cdk-validium-event-db:
+    container_name: cdk-validium-event-db
     image: postgres:15
     deploy:
       resources:
@@ -305,8 +305,8 @@ services:
     environment:
       - NETWORK=POE
       - SUBNETWORK=Polygon Hermez
-      - ETHEREUM_JSONRPC_HTTP_URL=http://zkevm-explorer-json-rpc:8124
-      - ETHEREUM_JSONRPC_TRACE_URL=http://zkevm-explorer-json-rpc:8124
+      - ETHEREUM_JSONRPC_HTTP_URL=http://cdk-validium-explorer-json-rpc:8124
+      - ETHEREUM_JSONRPC_TRACE_URL=http://cdk-validium-explorer-json-rpc:8124
       - DATABASE_URL=postgresql://l2_explorer_user:l2_explorer_password@explorer-backend-l2-db:5432/l2_explorer_db
       - SECRET_KEY_BASE=${EXPLORER_L2_SECRET_KEY_BASE}
       - MIX_ENV=prod
@@ -314,8 +314,8 @@ services:
       - CHAIN_TYPE=polygon_zkevm
       - CACHE_BLOCK_COUNT_PERIOD=5s
 
-  zkevm-explorer-json-rpc:
-    container_name: zkevm-explorer-json-rpc
+  cdk-validium-explorer-json-rpc:
+    container_name: cdk-validium-explorer-json-rpc
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     ports:
       - 8124:8124
@@ -410,8 +410,8 @@ services:
       - 80:80
       - 8084:8080
 
-  zkevm-mock-l1-network:
-    container_name: zkevm-mock-l1-network
+  cdk-validium-mock-l1-network:
+    container_name: cdk-validium-mock-l1-network
     image: snapchain/geth-cdk-validium-contracts:v0.0.3
     pull_policy: always
     ports:
@@ -442,8 +442,8 @@ services:
       - "/geth_data"
       - "--rpc.allow-unprotected-txs"
 
-  # zkevm-deploy-sepolia:
-  #   container_name: zkevm-deploy-sepolia
+  # cdk-validium-deploy-sepolia:
+  #   container_name: cdk-validium-deploy-sepolia
   #   image: snapchain/cdk-validium-contracts:v0.0.2
   #   volumes:
   #     - ./config/deploy_parameters.json:/cdk-validium-contracts/deployment/deploy_parameters.json
@@ -457,11 +457,11 @@ services:
   #     - "-c"
   #     - "npm run deploy:deployer:CDKValidium:sepolia && npm run deploy:testnet:CDKValidium:sepolia"
 
-  zkevm-data-availability:
-    container_name: zkevm-data-availability
+  cdk-validium-data-availability:
+    container_name: cdk-validium-data-availability
     restart: unless-stopped
     depends_on:
-      zkevm-data-node-db:
+      cdk-validium-data-node-db:
         condition: service_healthy
     image: 0xpolygon/cdk-data-availability:0.0.7
     deploy:
@@ -480,8 +480,8 @@ services:
       - "-c"
       - "/app/cdk-data-availability run --cfg /app/config.toml"
 
-  zkevm-prover:
-    container_name: zkevm-prover
+  cdk-validium-prover:
+    container_name: cdk-validium-prover
     image: hermeznetwork/zkevm-prover:v6.0.0
     ports:
       - 50061:50061 # MT
@@ -558,8 +558,8 @@ services:
       - ENABLE_DEPOSIT_WARNING=true
       - ENABLE_REPORT_FORM=false
 
-  zkevm-approve:
-    container_name: zkevm-approve
+  cdk-validium-approve:
+    container_name: cdk-validium-approve
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     volumes:
       - ./config/node/sequencer.keystore:/pk/keystore
@@ -570,9 +570,9 @@ services:
       - "-c"
       - "/app/zkevm-node approve --network custom --custom-network-file /app/genesis.json --key-store-path /pk/keystore --pw testonly --am 115792089237316195423570985008687907853269984665640564039457584007913129639935 -y --cfg /app/config.toml"
 
-  zkevm-metrics:
+  cdk-validium-metrics:
     image: prom/prometheus:v2.39.1
-    container_name: zkevm-metrics
+    container_name: cdk-validium-metrics
     restart: unless-stopped
     ports:
       - 9090:9090
@@ -582,8 +582,8 @@ services:
     volumes:
       - ./config/metrics/prometheus:/etc/prometheus
 
-  zkevm-sh:
-    container_name: zkevm-sh
+  cdk-validium-sh:
+    container_name: cdk-validium-sh
     image: 0xpolygon/cdk-validium-node:0.6.4-cdk
     stdin_open: true 
     tty: true
@@ -593,8 +593,8 @@ services:
     command:
       - "/bin/sh"
 
-  zkevm-data-node-db:
-    container_name: zkevm-data-node-db
+  cdk-validium-data-node-db:
+    container_name: cdk-validium-data-node-db
     restart: unless-stopped
     image: postgres:15
     healthcheck:
