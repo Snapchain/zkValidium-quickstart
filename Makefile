@@ -1,5 +1,3 @@
-include .env
-
 DOCKERCOMPOSE := docker compose -f docker-compose.yml
 DOCKERCOMPOSEAPPSEQ := zkevm-sequencer
 DOCKERCOMPOSEAPPSEQSENDER := zkevm-sequence-sender
@@ -138,6 +136,7 @@ STOPAPPROVE := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSENODEAPPROVE) && $(DOCKERCOMP
 STOPMETRICS := $(DOCKERCOMPOSE) stop $(DOCKERCOMPOSEMETRICS) && $(DOCKERCOMPOSE) rm -f $(DOCKERCOMPOSEMETRICS)
 
 STOP := $(DOCKERCOMPOSE) down --remove-orphans
+STOPCLEAN := $(DOCKERCOMPOSE) down --remove-orphans -v
 
 RUNDACDB := docker compose up -d zkevm-data-node-db
 STOPDACDB := docker compose stop zkevm-data-node-db && docker compose rm -f zkevm-data-node-db
@@ -576,9 +575,9 @@ run-bridge: ## Runs the native bridge
 
 .PHONY: run
 run: ## Runs a full node
+	$(MAKE) gasless on
 	$(MAKE) run-db
 	$(RUNL1NETWORK)
-	$(RUNSETUPDACMOCKL1)
 	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
@@ -587,24 +586,88 @@ run: ## Runs a full node
 	$(MAKE) run-dac
 	$(MAKE) run-bridge
 	$(MAKE) run-explorer
+	$(MAKE) run-metrics
+
+.PHONY: run-resume
+run-resume: ## Resumes a full node
+	$(MAKE) run-db
+	$(RUNL1NETWORK)
+	sleep 2
+	$(RUNZKPROVER)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-explorer
+	$(MAKE) run-metrics
 
 .PHONY: run-sepolia
-run-sepolia: ## Runs a full node and deploy contracts to L1 testnet sepolia
-	$(RUNDEPLOYSEPOLIA)
-	$(RUNSETUPDACSEPOLIA)
+run-sepolia:
+	$(MAKE) gasless on
 	$(MAKE) run-db
 	sleep 2
 	$(RUNZKPROVER)
-	$(RUNAPPROVE)
 	sleep 3
 	$(MAKE) run-node
 	$(MAKE) run-dac
 	$(MAKE) run-bridge
 	$(MAKE) run-l2-explorer
+	$(MAKE) run-metrics
+
+.PHONY: run-sepolia-restart
+run-sepolia-restart:
+	$(MAKE) gasless off
+	$(MAKE) stop-node
+	$(MAKE) run-node
+
+.PHONY: run-sepolia-resume
+run-sepolia-resume:
+	$(MAKE) gasless off
+	$(MAKE) run-db
+	sleep 2
+	$(RUNZKPROVER)
+	sleep 3
+	$(MAKE) run-node
+	$(MAKE) run-dac
+	$(MAKE) run-bridge
+	$(MAKE) run-l2-explorer
+	$(MAKE) run-metrics
+
+.PHONY: gasless-on gasless-off
+gasless-on gasless-off:
+	@:
+
+.PHONY: gasless
+gasless: ## Controls gasless mode
+	@if [ "$(MAKECMDGOALS)" = "gasless on" ]; then \
+		sed -i 's/DefaultMinGasPriceAllowed = 1000000000/DefaultMinGasPriceAllowed = 0/g' config/node/config.toml; \
+		sed -i 's/EnableL2SuggestedGasPricePolling = true/EnableL2SuggestedGasPricePolling = false/g' config/node/config.toml; \
+		sed -i 's/DefaultGasPriceWei = 1000000000/DefaultGasPriceWei = 0/g' config/node/config.toml; \
+	elif [ "$(MAKECMDGOALS)" = "gasless off" ]; then \
+		sed -i 's/DefaultMinGasPriceAllowed = 0/DefaultMinGasPriceAllowed = 1000000000/g' config/node/config.toml; \
+		sed -i 's/EnableL2SuggestedGasPricePolling = false/EnableL2SuggestedGasPricePolling = true/g' config/node/config.toml; \
+		sed -i 's/DefaultGasPriceWei = 0/DefaultGasPriceWei = 1000000000/g' config/node/config.toml; \
+	else \
+		echo "Invalid command. Use 'make gasless on' or 'make gasless off'"; \
+	fi
+
+## to prevent make from complaining about "No rule to make target 'on'/'off'"
+%:
+	@:
+
+.PHONY: set-env
+set-env:
+	cp .env.example .env
+	sed -i 's/COMMON_HOST=localhost/COMMON_HOST=$(host)/' .env
 
 .PHONY: stop
 stop: ## Stops all services
 	$(STOP)
+
+.PHONY: stop-clean
+stop-clean: ## Stops all services and remove volumes
+	$(STOPCLEAN)
+	$(MAKE) gasless on
 
 .PHONY: ship
 ship: ## Builds docker images and run them
@@ -742,7 +805,9 @@ ps: ## Chekc all running services
 
 .PHONY: ps-exited
 ps-exited: ## Chekc all exited services
-	$(DOCKERCOMPOSE) ps -a --format "table {{.Service}}\t{{.Image}}\t{{.Status}}" | grep 'Exited'
+	$(DOCKERCOMPOSE) ps -a --format "table {{.Service}}\t{{.Image}}\t{{.Status}}" \
+		| grep 'Exited' \
+		|| echo "No exited containers"
 
 ## Help display.
 ## Pulls comments from beside commands and prints a nicely formatted
