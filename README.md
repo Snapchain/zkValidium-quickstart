@@ -1,7 +1,7 @@
-# zkValidium-quickstart
+# Polygon CDK Quickstart
 
-Please refer to https://docs.polygon.technology/cdk/get-started/quickstart-validium/ to see how to use this repo.
+This repo helps you set up a CDK chain locally in a container environment in under 5 minutes.
 
-Make sure to check the **System Requirement** section.
+Please refer to https://docs.polygon.technology/cdk/overview/ to read more about the CDK framework.
 
 To report a problem, you can submit an issue and provide sufficient details to help us better understand the context.
